@@ -1181,7 +1181,375 @@ const quizData = [
     }
 ];
 
-// Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = quizData;
+// Quiz State
+let currentQuestion = 0;
+let userAnswers = new Array(quizData.length).fill(null);
+let shuffledQuizData = []; // Store shuffled questions
+
+// Fisher-Yates Shuffle Algorithm
+function fisherYatesShuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
 }
+
+// Shuffle questions and options
+function shuffleQuiz() {
+    // Shuffle the order of questions
+    const shuffledQuestions = fisherYatesShuffle(quizData);
+    
+    // For each question, shuffle the options and update correct index (only for MCQ)
+    shuffledQuizData = shuffledQuestions.map(q => {
+        // Open-ended questions don't have options to shuffle
+        if (q.type === 'open') {
+            return q;
+        }
+        
+        // Create array of [option, originalIndex] pairs
+        const optionsWithIndex = q.options.map((opt, idx) => ({
+            text: opt,
+            originalIndex: idx
+        }));
+        
+        // Shuffle the options
+        const shuffledOptions = fisherYatesShuffle(optionsWithIndex);
+        
+        // Find the new position of the correct answer
+        const newCorrectIndex = shuffledOptions.findIndex(
+            opt => opt.originalIndex === q.correct
+        );
+        
+        // Return shuffled question with updated correct index
+        return {
+            ...q,
+            options: shuffledOptions.map(opt => opt.text),
+            correct: newCorrectIndex
+        };
+    });
+}
+
+// Category Emojis Mapping
+const categoryEmojis = {
+    'Microservices': '🔀',
+    'API Gateway': '🚪',
+    'Load Balancing': '⚖️',
+    'Distributed Systems': '🌐',
+    'Caching': '⚡',
+    'Message Queues': '📨',
+    'Container Orchestration': '📦',
+    'Database Scaling': '📊',
+    'CDN': '🌍',
+    'Service Discovery': '🔍',
+    'Authentication': '🔐',
+    'Authorization': '🛡️',
+    'Event-Driven': '⚡',
+    'Real-Time': '🔄',
+    'Idempotency': '🔄',
+    'Backpressure': '📉',
+    'Throttling': '🚦',
+    'Observability': '👁️',
+    'System Design': '🏛️',
+    'Security': '🔒'
+};
+
+// DOM Elements
+const questionCounter = document.getElementById('questionCounter');
+const categoryBadge = document.getElementById('categoryBadge');
+const questionText = document.getElementById('questionText');
+const optionsContainer = document.getElementById('optionsContainer');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const showAnswerBtn = document.getElementById('showAnswerBtn');
+const quizComplete = document.getElementById('quizComplete');
+const quizCard = document.querySelector('.quiz-card');
+const body = document.body;
+
+// Modal Elements
+const answerModal = document.getElementById('answerModal');
+const correctAnswer = document.getElementById('correctAnswer');
+const explanation = document.getElementById('explanation');
+
+// Update background gradient based on current question
+function updateBackgroundGradient() {
+    const totalQuestions = shuffledQuizData.length || 100;
+    const progress = currentQuestion / (totalQuestions - 1);
+
+    const startHue = 220;
+    const endHue = 380;
+    const hue = startHue + (progress * (endHue - startHue));
+    const normalizedHue = hue % 360;
+    const secondHue = (normalizedHue + 40) % 360;
+
+    const color1 = `hsl(${normalizedHue}, 55%, 88%)`;
+    const color2 = `hsl(${secondHue}, 60%, 85%)`;
+
+    body.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+}
+
+// Initialize
+function init() {
+    console.log('Initializing quiz...');
+    
+    const questionTextEl = document.getElementById('questionText');
+    const questionCounterEl = document.getElementById('questionCounter');
+    const categoryBadgeEl = document.getElementById('categoryBadge');
+    const optionsContainerEl = document.getElementById('optionsContainer');
+    
+    if (!quizData || quizData.length === 0) {
+        console.error('Quiz data is empty!');
+        if (questionTextEl) questionTextEl.textContent = 'Error: Quiz data not found';
+        return;
+    }
+    
+    console.log('Quiz data loaded:', quizData.length, 'questions');
+    
+    shuffleQuiz();
+    console.log('Shuffled quiz:', shuffledQuizData.length, 'questions');
+    
+    userAnswers = new Array(shuffledQuizData.length).fill(null);
+    renderQuestion();
+    updateNavigation();
+    updateBackgroundGradient();
+}
+
+// Render current question
+function renderQuestion() {
+    const questionTextEl = document.getElementById('questionText');
+    const questionCounterEl = document.getElementById('questionCounter');
+    const categoryBadgeEl = document.getElementById('categoryBadge');
+    const optionsContainerEl = document.getElementById('optionsContainer');
+    
+    if (!shuffledQuizData || shuffledQuizData.length === 0) {
+        console.error('Quiz data not loaded yet');
+        return;
+    }
+    
+    const q = shuffledQuizData[currentQuestion];
+    
+    if (!q) {
+        console.error('Question not found at index', currentQuestion);
+        return;
+    }
+
+    if (questionCounterEl) {
+        questionCounterEl.textContent = `Question ${currentQuestion + 1}/${shuffledQuizData.length}`;
+    }
+    
+    const emoji = categoryEmojis[q.category] || '💡';
+    if (categoryBadgeEl) {
+        categoryBadgeEl.textContent = `${emoji} ${q.category}`;
+        categoryBadgeEl.className = 'category-badge';
+        categoryBadgeEl.setAttribute('data-category', q.category);
+    }
+    
+    if (questionTextEl) {
+        questionTextEl.textContent = q.question;
+    }
+    
+    if (optionsContainerEl) {
+        optionsContainerEl.innerHTML = '';
+        
+        if (q.type === 'open') {
+            const hintEl = document.createElement('div');
+            hintEl.className = 'open-question-hint';
+            hintEl.innerHTML = `
+                <div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.3); margin-bottom: 12px;">
+                    <p style="color: rgba(255,255,255,0.7); font-style: italic; margin: 0;">💡 This is a scenario-based question. Think about your approach, then click "Show Answer" to see the detailed solution.</p>
+                </div>
+            `;
+            optionsContainerEl.appendChild(hintEl);
+        } else {
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            q.options.forEach((option, index) => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'option';
+                
+                optionEl.innerHTML = `
+                    <span class="option-letter">${labels[index]}</span>
+                    <span class="option-text">${option}</span>
+                `;
+                
+                optionEl.onclick = () => selectOption(index);
+                optionsContainerEl.appendChild(optionEl);
+            });
+        }
+    }
+}
+
+// Select an option - immediate feedback (only for multiple choice)
+function selectOption(index) {
+    const q = shuffledQuizData[currentQuestion];
+    
+    if (q.type === 'open') return;
+    
+    userAnswers[currentQuestion] = index;
+    
+    const optionsContainerEl = document.getElementById('optionsContainer');
+    const optionEls = optionsContainerEl ? optionsContainerEl.querySelectorAll('.option') : [];
+    
+    optionEls.forEach((el, i) => {
+        el.classList.remove('selected');
+        
+        if (i === q.correct) {
+            el.classList.add('correct');
+        } else if (i === index && i !== q.correct) {
+            el.classList.add('wrong');
+        }
+        
+        el.onclick = null;
+        el.style.cursor = 'default';
+    });
+}
+
+// Show answer in modal
+function showAnswer() {
+    const q = shuffledQuizData[currentQuestion];
+    const labels = ['A', 'B', 'C', 'D'];
+    const correctAnswerEl = document.getElementById('correctAnswer');
+    const explanationEl = document.getElementById('explanation');
+    
+    if (q.type === 'open' && userAnswers[currentQuestion] === null) {
+        userAnswers[currentQuestion] = -1;
+    }
+    
+    if (q.type === 'open') {
+        if (correctAnswerEl) {
+            correctAnswerEl.innerHTML = `
+                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%); padding: 16px; border-radius: 12px; border-left: 4px solid #667eea; margin-bottom: 16px;">
+                    <strong style="color: #1e40af; display: block; margin-bottom: 8px;">📝 Sample Answer:</strong>
+                    <div style="color: #1e293b; line-height: 1.6;">${q.answer || 'See detailed explanation below'}</div>
+                </div>
+            `;
+        }
+        if (explanationEl) {
+            explanationEl.innerHTML = `<strong>Detailed Explanation:</strong><br><br>${q.explanation}`;
+        }
+    } else {
+        if (correctAnswerEl) {
+            correctAnswerEl.textContent = `Correct answer: ${labels[q.correct]}`;
+        }
+        if (explanationEl) {
+            explanationEl.innerHTML = q.explanation;
+        }
+    }
+    
+    answerModal.classList.add('active');
+}
+
+// Close modal
+function closeModal(event) {
+    if (!event || event.target === answerModal) {
+        answerModal.classList.remove('active');
+    }
+}
+
+// Navigation
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+        updateNavigation();
+        updateBackgroundGradient();
+    }
+}
+
+function nextQuestion() {
+    if (currentQuestion < shuffledQuizData.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+        updateNavigation();
+        updateBackgroundGradient();
+    } else {
+        showCompletion();
+    }
+}
+
+function updateNavigation() {
+    prevBtn.disabled = currentQuestion === 0;
+    nextBtn.textContent = currentQuestion === shuffledQuizData.length - 1 ? 'Finish →' : 'Next →';
+}
+
+function showCompletion() {
+    let correctCount = 0;
+    let viewedCount = 0;
+    
+    for (let i = 0; i < shuffledQuizData.length; i++) {
+        const q = shuffledQuizData[i];
+        if (q.type === 'open') {
+            if (userAnswers[i] !== null) {
+                viewedCount++;
+            }
+        } else {
+            if (userAnswers[i] === q.correct) {
+                correctCount++;
+            }
+        }
+    }
+    
+    const totalAnswered = correctCount + viewedCount;
+    document.getElementById('correctCount').textContent = totalAnswered;
+    document.getElementById('totalCount').textContent = shuffledQuizData.length;
+    
+    const percentage = (correctCount / shuffledQuizData.length) * 100;
+    const messageEl = document.getElementById('resultMessage');
+    
+    if (percentage === 100) {
+        messageEl.textContent = '🌟 Perfect score! You\'re a system design master!';
+    } else if (percentage >= 80) {
+        messageEl.textContent = '🎉 Excellent! You really know your system design!';
+    } else if (percentage >= 60) {
+        messageEl.textContent = '👍 Good job! Keep practicing to improve!';
+    } else {
+        messageEl.textContent = '💪 Keep learning! You\'ll get better with practice!';
+    }
+    
+    quizCard.style.display = 'none';
+    quizComplete.style.display = 'block';
+}
+
+function restartQuiz() {
+    shuffleQuiz();
+    currentQuestion = 0;
+    userAnswers = new Array(shuffledQuizData.length).fill(null);
+    quizCard.style.display = 'flex';
+    quizCard.style.flexDirection = 'column';
+    quizComplete.style.display = 'none';
+    renderQuestion();
+    updateNavigation();
+    updateBackgroundGradient();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (quizComplete.style.display === 'block') return;
+    
+    if (e.key === 'Escape' && answerModal.classList.contains('active')) {
+        closeModal();
+        return;
+    }
+    
+    if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
+        prevQuestion();
+    } else if (e.key === 'ArrowRight') {
+        nextQuestion();
+    } else if (e.key >= '1' && e.key <= '4') {
+        selectOption(parseInt(e.key) - 1);
+    } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        showAnswer();
+    }
+});
+
+// Start when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        init();
+    } catch (error) {
+        console.error('Failed to initialize quiz:', error);
+        questionText.textContent = 'Failed to load quiz. Please refresh the page.';
+    }
+});

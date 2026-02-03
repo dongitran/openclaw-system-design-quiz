@@ -373,7 +373,7 @@ const quizData = [
         id: 29,
         category: "Distributed Systems",
         question: "What is the Two-Generals Problem?",
-        [
+        options: [
             "A consensus problem where reliable communication cannot be guaranteed",
             "A load balancing algorithm",
             "A database replication strategy",

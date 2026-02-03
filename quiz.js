@@ -1,2124 +1,1187 @@
-/** Database Quiz - 50 Questions */
+/** System Design & Architecture Quiz - 100 Questions for Senior Fullstack Developers */
 const quizData = [
+    // ==================== MICROSERVICES PATTERNS (1-12) ====================
     {
         id: 1,
-        category: "SQL",
-        question: "What is the result of SELECT NULL = NULL?",
+        category: "Microservices",
+        question: "What is the primary purpose of the Circuit Breaker pattern?",
         options: [
-            "TRUE",
-            "FALSE",
-            "NULL",
-            "ERROR"
+            "To encrypt data in transit between services",
+            "To prevent cascading failures in distributed systems",
+            "To balance traffic across multiple servers",
+            "To cache frequently accessed data"
         ],
-        correct: 2,
-        explanation: "NULL represents an unknown value. NULL = NULL returns NULL (unknown), not TRUE. To compare NULL, use IS NULL or IS NOT NULL."
+        correct: 1,
+        explanation: "<strong>Circuit Breaker</strong> stops cascading failures by failing fast when a service is unhealthy. It monitors failures and temporarily blocks requests to failing services, giving them time to recover while protecting the overall system stability."
     },
     {
         id: 2,
-        category: "SQL",
-        question: "What is the difference between INNER JOIN and LEFT JOIN?",
+        category: "Microservices",
+        question: "What problem does the Saga pattern solve in microservices?",
         options: [
-            "No difference",
-            "INNER JOIN returns matching records from both tables, LEFT JOIN returns all from left table + matches from right table",
-            "LEFT JOIN is faster than INNER JOIN",
-            "INNER JOIN only works with 2 tables"
+            "Service discovery and registration",
+            "Maintaining data consistency across distributed transactions",
+            "Load balancing between services",
+            "API versioning and backward compatibility"
         ],
         correct: 1,
-        explanation: "<strong>INNER JOIN</strong> only returns records that have matches in <em>both tables</em>. <strong>LEFT JOIN</strong> returns <em>all records from the left table</em>, along with matching records from the right table (if no match, values are NULL)."
+        explanation: "<strong>Saga pattern</strong> manages distributed transactions by breaking them into a sequence of local transactions. Each service updates its data and publishes events/changes, with compensating transactions handling failures to ensure eventual consistency."
     },
     {
         id: 3,
-        category: "Transaction",
-        question: "What is ACID in database transactions?",
+        category: "Microservices",
+        question: "What is the main difference between Orchestration and Choreography in Saga pattern?",
         options: [
-            "Advanced, Concurrent, Indexed, Distributed",
-            "Atomicity, Consistency, Isolation, Durability",
-            "Automatic, Consistent, Integrated, Data",
-            "Application, Cache, Index, Database"
+            "Orchestration uses a central coordinator, Choreography uses event-driven communication",
+            "Orchestration is synchronous, Choreography is asynchronous",
+            "Orchestration is for small systems, Choreography for large systems",
+            "There is no difference; they are the same pattern"
         ],
-        correct: 1,
-        explanation: "<strong>ACID</strong> stands for:<br>• <strong>A</strong>tomicity: All or nothing<br>• <strong>C</strong>onsistency: Data is always valid<br>• <strong>I</strong>solation: Transactions are independent<br>• <strong>D</strong>urability: Data is permanently saved"
+        correct: 0,
+        explanation: "<strong>Orchestration</strong> uses a central coordinator (saga orchestrator) that directs each step. <strong>Choreography</strong> has each service listen to events and independently decide actions. Orchestration is easier to understand, Choreography is more loosely coupled."
     },
     {
         id: 4,
-        category: "Normalization",
-        question: "What does Third Normal Form (3NF) require?",
+        category: "Microservices",
+        question: "What does CQRS (Command Query Responsibility Segregation) pattern achieve?",
         options: [
-            "Just need a primary key",
-            "Satisfies 2NF and has no transitive dependency",
-            "All columns must be VARCHAR",
-            "No relationships between tables allowed"
+            "Combines read and write operations for consistency",
+            "Separates read and write operations to optimize each independently",
+            "Encrypts data at rest and in transit",
+            "Provides automatic service discovery"
         ],
         correct: 1,
-        explanation: "<strong>3NF</strong> requires:<br>1. Satisfies 2NF<br>2. No <strong>transitive dependency</strong> - meaning non-key columns must not depend on each other, only directly on the primary key."
+        explanation: "<strong>CQRS</strong> separates read models (optimized for queries, can be denormalized) from write models (optimized for commands/business logic). This allows independent scaling and optimization but increases complexity."
     },
     {
         id: 5,
-        category: "Indexing",
-        question: "What is an index used for in a database?",
+        category: "Microservices",
+        question: "What is Event Sourcing and what is its key benefit?",
         options: [
-            "Temporary data storage",
-            "Speed up SELECT queries",
-            "Reduce database size",
-            "Encrypt data"
+            "Storing only current state; benefit is smaller storage",
+            "Storing state changes as events; benefit is complete audit trail and temporal queries",
+            "Publishing events to a message bus; benefit is loose coupling",
+            "Encrypting events before storage; benefit is security"
         ],
         correct: 1,
-        explanation: "<strong>Index</strong> helps speed up <em>reading data (SELECT)</em> by creating a data structure (usually B-tree) that allows faster searching. However, indexes <em>slow down</em> INSERT, UPDATE, and DELETE operations."
+        explanation: "<strong>Event Sourcing</strong> stores state as a sequence of events rather than current state. Benefits: complete audit history, ability to replay events, temporal queries (what was state at time X), but requires more storage and complexity."
     },
     {
         id: 6,
-        category: "SQL",
-        question: "Which SQL finds duplicate records in a table?",
+        category: "Microservices",
+        question: "What is the BFF (Backend for Frontend) pattern?",
         options: [
-            "SELECT * FROM table WHERE duplicate = true",
-            "SELECT column, COUNT(*) FROM table GROUP BY column HAVING COUNT(*) > 1",
-            "SELECT DUPLICATE * FROM table",
-            "FIND DUPLICATES IN table"
+            "A pattern where backend developers are friends with frontend developers",
+            "Creating separate backend services tailored to specific frontend needs",
+            "Using the same API for all clients (web, mobile, desktop)",
+            "Caching frontend assets on the backend"
         ],
         correct: 1,
-        explanation: "The statement <code>SELECT column, COUNT(*) FROM table GROUP BY column HAVING COUNT(*) > 1</code> groups identical values and only returns groups with more than 1 record (i.e., duplicates)."
+        explanation: "<strong>BFF</strong> creates dedicated backend services for each frontend type (web, iOS, Android). This allows optimization for each client's specific needs rather than forcing a one-size-fits-all general-purpose API."
     },
     {
         id: 7,
-        category: "NoSQL",
-        question: "What type of NoSQL is MongoDB?",
+        category: "Microservices",
+        question: "What are the three states of a Circuit Breaker?",
         options: [
-            "Key-Value store",
-            "Document store",
-            "Column-family store",
-            "Graph database"
+            "Open, Closed, Locked",
+            "Open, Closed, Half-Open",
+            "Active, Passive, Standby",
+            "Running, Stopped, Paused"
         ],
         correct: 1,
-        explanation: "<strong>MongoDB</strong> is a <strong>Document Store</strong> - stores data as JSON/BSON documents. Each document can have a different structure, very flexible compared to SQL."
+        explanation: "<strong>Circuit Breaker states:</strong><br>• <strong>Closed</strong>: Normal operation, requests pass through<br>• <strong>Open</strong>: Failure threshold reached, requests fail fast<br>• <strong>Half-Open</strong>: Testing if service recovered, limited requests allowed"
     },
     {
         id: 8,
-        category: "SQL",
-        question: "What is the difference between WHERE and HAVING?",
+        category: "Microservices",
+        question: "What is the main trade-off when using CQRS?",
         options: [
-            "No difference",
-            "WHERE filters before GROUP BY, HAVING filters after GROUP BY",
-            "HAVING is faster than WHERE",
-            "WHERE is only for numbers, HAVING is for strings"
+            "Simpler code vs. better performance",
+            "Eventual consistency between read and write models",
+            "Security vs. usability",
+            "Storage cost vs. query speed"
         ],
         correct: 1,
-        explanation: "<strong>WHERE</strong> filters <em>records</em> before grouping (GROUP BY). <strong>HAVING</strong> filters <em>results</em> after grouping, usually used with aggregate functions (COUNT, SUM, AVG...)."
+        explanation: "<strong>CQRS trade-off:</strong> Read and write models may be temporarily inconsistent (eventual consistency). Updates to write model must propagate to read model, creating a window where data differs."
     },
     {
         id: 9,
-        category: "Transaction",
-        question: "Which isolation level is the highest (safest)?",
+        category: "Microservices",
+        question: "In Event Sourcing, how do you rebuild current state?",
         options: [
-            "READ UNCOMMITTED",
-            "READ COMMITTED",
-            "REPEATABLE READ",
-            "SERIALIZABLE"
+            "Query the latest snapshot from database",
+            "Replay all events from the beginning",
+            "Read from a materialized view",
+            "Call a REST API to get current state"
         ],
-        correct: 3,
-        explanation: "<strong>SERIALIZABLE</strong> is the highest isolation level, ensuring transactions execute as if they were sequential (no phantom reads, non-repeatable reads, or dirty reads). However, it has the lowest performance."
+        correct: 1,
+        explanation: "<strong>Rebuilding state:</strong> Replay all events in order, applying each to recreate current state. Snapshots can optimize this by storing intermediate states, reducing events to replay."
     },
     {
         id: 10,
-        category: "SQL",
-        question: "How do Primary Key and Unique Key differ?",
+        category: "Microservices",
+        question: "When is compensating transaction used in Saga pattern?",
         options: [
-            "No difference",
-            "Primary Key does not allow NULL, Unique Key allows 1 NULL",
-            "Unique Key is mandatory, Primary Key is not",
-            "Primary Key is only for integers"
+            "When a step completes successfully",
+            "When a step fails, to undo previous successful steps",
+            "At the beginning of every saga",
+            "Only for read operations"
         ],
         correct: 1,
-        explanation: "<strong>Primary Key</strong>: Does not allow NULL, only one per table, used as the main key.<br><strong>Unique Key</strong>: Allows <em>1 NULL value</em>, a table can have multiple unique keys."
+        explanation: "<strong>Compensating transactions</strong> undo the effects of previously completed steps when a later step fails. Unlike ACID rollback, they apply business logic to reverse operations (e.g., issue refund for completed charge)."
     },
     {
         id: 11,
-        category: "SQL",
-        question: "How do DELETE and TRUNCATE differ?",
+        category: "Microservices",
+        question: "What is a Sidecar pattern in microservices?",
         options: [
-            "No difference",
-            "DELETE deletes rows one by one and logs, TRUNCATE deletes entire pages and doesn't log",
-            "TRUNCATE can use WHERE, DELETE cannot",
-            "DELETE is faster than TRUNCATE"
+            "Deploying services on the same physical server",
+            "Deploying helper components in separate containers alongside main service",
+            "Using a secondary database for backups",
+            "Running services in standby mode"
         ],
         correct: 1,
-        explanation: "<strong>DELETE</strong>: Deletes row by row, can use WHERE, logs fully, can be rolled back.<br><strong>TRUNCATE</strong>: Deletes all data (no WHERE), less logging, faster, resets auto-increment."
+        explanation: "<strong>Sidecar pattern</strong> deploys supporting components (logging, monitoring, proxy) in separate containers that share the same lifecycle and resources as the main application container."
     },
     {
         id: 12,
-        category: "NoSQL",
-        question: "What type of database is Redis?",
+        category: "Microservices",
+        question: "What is the Strangler Fig pattern used for?",
         options: [
-            "Document database",
-            "Key-Value store",
-            "Relational database",
-            "Graph database"
+            "Optimizing database queries",
+            "Gradually migrating monolith to microservices",
+            "Implementing caching strategies",
+            "Load balancing requests"
         ],
         correct: 1,
-        explanation: "<strong>Redis</strong> is a <strong>Key-Value Store</strong> - stores data as key-value pairs in memory. Very fast, commonly used as cache, session store, and rate limiting."
+        explanation: "<strong>Strangler Fig pattern</strong> incrementally replaces monolith functionality with microservices. New features go to microservices, old features are gradually migrated, with a facade routing between them."
     },
+
+    // ==================== API GATEWAY, LOAD BALANCING, RATE LIMITING (13-22) ====================
     {
         id: 13,
-        category: "SQL",
-        question: "Which statement gets the first 5 records in MySQL?",
+        category: "API Gateway",
+        question: "What are the primary responsibilities of an API Gateway?",
         options: [
-            "SELECT TOP 5 * FROM table",
-            "SELECT FIRST 5 * FROM table",
-            "SELECT * FROM table LIMIT 5",
-            "SELECT * FROM table FETCH 5"
+            "Only routing requests to backend services",
+            "Request routing, authentication, rate limiting, request/response transformation",
+            "Only serving static files and assets",
+            "Only handling database connections"
         ],
-        correct: 2,
-        explanation: "In <strong>MySQL</strong>, use <code>LIMIT 5</code>. In SQL Server use <code>TOP 5</code>, in Oracle use <code>FETCH FIRST 5 ROWS ONLY</code>."
+        correct: 1,
+        explanation: "<strong>API Gateway</strong> acts as a single entry point handling: request routing, authentication/authorization, rate limiting, SSL termination, request/response transformation, caching, and protocol translation."
     },
     {
         id: 14,
-        category: "Indexing",
-        question: "When does a Composite Index (Multi-column index) work best?",
+        category: "Load Balancing",
+        question: "What is the difference between Layer 4 (L4) and Layer 7 (L7) load balancing?",
         options: [
-            "When query only uses the last column of the index",
-            "When query uses columns from left to right in index order",
-            "When query uses OR instead of AND",
-            "When table has fewer than 100 rows"
+            "L4 is hardware, L7 is software",
+            "L4 uses TCP/UDP info, L7 uses HTTP/HTTPS content for routing decisions",
+            "L4 is faster but L7 is cheaper",
+            "There is no difference"
         ],
         correct: 1,
-        explanation: "<strong>Composite Index</strong> (A, B, C) works best when queries use columns from <em>left to right</em>: A, or A+B, or A+B+C. Cannot be used if only querying B or C."
+        explanation: "<strong>L4 load balancing</strong> routes based on IP address and TCP/UDP ports (transport layer). <strong>L7 load balancing</strong> inspects HTTP headers, cookies, URL paths (application layer) for intelligent routing."
     },
     {
         id: 15,
-        category: "Normalization",
-        question: "What is Denormalization and when should it be used?",
+        category: "Rate Limiting",
+        question: "What is the Token Bucket algorithm used for?",
         options: [
-            "Delete database - never use",
-            "Intentionally add redundant data to speed up reads",
-            "Create index for all columns",
-            "Convert from SQL to NoSQL"
+            "Authentication and authorization",
+            "Rate limiting with ability to handle traffic bursts",
+            "Load balancing across servers",
+            "Database connection pooling"
         ],
         correct: 1,
-        explanation: "<strong>Denormalization</strong> is intentionally adding redundant data (violating normal forms) to <em>reduce the number of JOINs</em> and speed up reads. Often used for read-heavy systems like data warehouses."
+        explanation: "<strong>Token Bucket</strong> allows bursts of traffic up to bucket capacity while maintaining average rate. Tokens are added at constant rate; requests consume tokens. If bucket empty, requests are rejected."
     },
     {
         id: 16,
-        category: "SQL",
-        question: "How do UNION and UNION ALL differ?",
+        category: "Rate Limiting",
+        question: "How does the Sliding Window algorithm differ from Fixed Window for rate limiting?",
         options: [
-            "No difference",
-            "UNION removes duplicates, UNION ALL keeps all",
-            "UNION ALL only works for 2 tables",
-            "UNION is faster than UNION ALL"
+            "Sliding window uses less memory",
+            "Sliding window prevents burst attacks at window boundaries",
+            "Fixed window is more accurate",
+            "They are identical algorithms"
         ],
         correct: 1,
-        explanation: "<strong>UNION</strong>: Combines results and <em>removes duplicate records</em> (slower).<br><strong>UNION ALL</strong>: Combines and <em>keeps all</em> records (faster)."
+        explanation: "<strong>Fixed Window</strong> can allow 2x rate at window boundaries (end of one + start of next). <strong>Sliding Window</strong> tracks exact timestamps, preventing boundary attacks but requiring more memory."
     },
     {
         id: 17,
-        category: "SQL",
-        question: "Which statement finds the 2nd highest value in the salary column?",
+        category: "Load Balancing",
+        question: "Which load balancing algorithm considers server capacity/health?",
         options: [
-            "SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)",
-            "SELECT SECOND_MAX(salary) FROM employees",
-            "SELECT TOP 2 salary FROM employees ORDER BY salary DESC",
-            "SELECT MAX(salary) - 1 FROM employees"
+            "Round Robin",
+            "Least Connections",
+            "Random",
+            "IP Hash"
         ],
-        correct: 0,
-        explanation: "Common approach: <code>SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees)</code>. Can also use window functions like ROW_NUMBER() in modern SQL."
+        correct: 1,
+        explanation: "<strong>Least Connections</strong> routes to the server with fewest active connections, considering current load. <strong>Round Robin</strong> ignores server state; <strong>IP Hash</strong> uses client IP for consistency."
     },
     {
         id: 18,
-        category: "Database Design",
-        question: "What is a Foreign Key used for?",
+        category: "API Gateway",
+        question: "What is the purpose of request aggregation in API Gateway?",
         options: [
-            "Creates automatic index",
-            "Ensures referential integrity between tables",
-            "Speeds up queries",
-            "Encrypts data"
+            "To compress request bodies",
+            "To combine multiple backend calls into single client request",
+            "To encrypt request data",
+            "To validate request schemas only"
         ],
         correct: 1,
-        explanation: "<strong>Foreign Key</strong> ensures <strong>referential integrity</strong> - prevents creating records that reference non-existent data, and can configure actions when original data is deleted (CASCADE, SET NULL...)."
+        explanation: "<strong>Request aggregation</strong> (or backend for frontend) combines multiple microservice calls into one. Client makes single request, Gateway fans out to services, aggregates responses, reducing client complexity."
     },
     {
         id: 19,
-        category: "NoSQL",
-        question: "What are the strengths of NoSQL compared to SQL?",
+        category: "Rate Limiting",
+        question: "What is the difference between rate limiting and throttling?",
         options: [
-            "Always faster than SQL in all cases",
-            "Easy to scale horizontally, flexible schema, good for unstructured data",
-            "Better ACID transaction support",
-            "Standardized query language"
+            "They are the same thing",
+            "Rate limiting rejects requests, throttling slows down processing",
+            "Rate limiting is for APIs, throttling is for databases only",
+            "Throttling is always stricter than rate limiting"
         ],
         correct: 1,
-        explanation: "<strong>NoSQL</strong> strengths:<br>• <strong>Horizontal scaling</strong> (easy distribution)<br>• <strong>Flexible schema</strong> (no predefined structure needed)<br>• Good for <strong>unstructured/semi-structured data</strong>"
+        explanation: "<strong>Rate limiting</strong> rejects excess requests (returns 429). <strong>Throttling</strong> delays/slows processing of requests to match capacity (queues or slows responses rather than rejecting)."
     },
     {
         id: 20,
-        category: "SQL",
-        question: "Which is usually more efficient, Subquery or JOIN?",
+        category: "Load Balancing",
+        question: "What is session affinity (sticky sessions) in load balancing?",
         options: [
-            "Subquery is always faster",
-            "JOIN is usually more efficient because the database engine optimizes better",
-            "No difference",
-            "Cannot be compared"
+            "Encrypting session data",
+            "Routing same client to same backend server",
+            "Storing sessions in a database",
+            "Validating session tokens"
         ],
         correct: 1,
-        explanation: "<strong>JOIN</strong> is usually more efficient because the database engine can optimize the execution plan better. However, depending on the case, subqueries may be more readable and with modern optimizers, the difference is not significant."
+        explanation: "<strong>Session affinity</strong> ensures requests from the same client always go to the same backend server. Important when session state is stored locally on servers rather than shared storage."
     },
     {
         id: 21,
-        category: "Transaction",
-        question: "What is a Deadlock in a database?",
+        category: "API Gateway",
+        question: "What is the purpose of SSL/TLS termination at the API Gateway?",
         options: [
-            "Database crashes",
-            "Two transactions waiting for each other to release locks",
-            "Query takes too long",
-            "Index is corrupted"
+            "To increase encryption strength",
+            "To offload encryption/decryption work from backend services",
+            "To disable HTTPS for internal traffic",
+            "To prevent man-in-the-middle attacks only"
         ],
         correct: 1,
-        explanation: "<strong>Deadlock</strong> occurs when Transaction A locks resource X and waits for resource Y, while Transaction B locks resource Y and waits for resource X. Both wait for each other forever. The database usually automatically detects and kills one transaction."
+        explanation: "<strong>SSL termination</strong> at Gateway means Gateway handles HTTPS with clients, then uses HTTP internally. Offloads CPU-intensive encryption from backends and simplifies certificate management."
     },
     {
         id: 22,
-        category: "SQL",
-        question: "What is the COALESCE() function used for?",
+        category: "Rate Limiting",
+        question: "Which rate limiting strategy allows different limits for different users?",
         options: [
-            "Combine multiple tables",
-            "Returns the first non-NULL value in the list",
-            "Sum of columns",
-            "Compress data"
+            "Global rate limiting",
+            "Per-client/IP rate limiting",
+            "Static rate limiting",
+            "Single bucket rate limiting"
         ],
         correct: 1,
-        explanation: "<strong>COALESCE(value1, value2, ...)</strong> returns the <em>first non-NULL value</em>. Often used to replace NULL with a default value: <code>COALESCE(phone, 'N/A')</code>"
+        explanation: "<strong>Per-client/IP rate limiting</strong> maintains separate counters/buckets for each client. Premium users can get higher limits than free users, and abuse from one client doesn't affect others."
     },
+
+    // ==================== DISTRIBUTED SYSTEMS (23-32) ====================
     {
         id: 23,
-        category: "Indexing",
-        question: "What is a Covering Index?",
+        category: "Distributed Systems",
+        question: "What does the CAP theorem state?",
         options: [
-            "Index covering the entire database",
-            "Index containing all columns needed for the query (no lookup to original table)",
-            "Index for all tables",
-            "Backup of index"
+            "A distributed system must choose 2 of 3: Consistency, Availability, Partition tolerance",
+            "A distributed system can achieve all three: Consistency, Availability, Partition tolerance",
+            "A distributed system only needs Consistency and Availability",
+            "CAP stands for Cache, API, and Proxy"
         ],
-        correct: 1,
-        explanation: "<strong>Covering Index</strong> is an index containing <em>all columns</em> needed for a query (in both WHERE and SELECT). The query only needs to read the index, no need to access the original table → very fast."
+        correct: 0,
+        explanation: "<strong>CAP Theorem:</strong> In presence of network partition, you must choose between <strong>C</strong>onsistency (all nodes see same data) or <strong>A</strong>vailability (all requests get response). Partition tolerance is mandatory in distributed systems."
     },
     {
         id: 24,
-        category: "SQL",
-        question: "What is the ROW_NUMBER() window function used for?",
+        category: "Distributed Systems",
+        question: "What is the difference between Strong Consistency and Eventual Consistency?",
         options: [
-            "Count total rows in table",
-            "Assign unique sequential numbers to rows in a partition",
-            "Calculate average",
-            "Create primary key"
+            "Strong consistency is faster than eventual consistency",
+            "Strong consistency guarantees immediate consistency; eventual consistency allows temporary divergence",
+            "Eventual consistency is only for databases",
+            "There is no practical difference"
         ],
         correct: 1,
-        explanation: "<strong>ROW_NUMBER()</strong> assigns unique sequential numbers (1, 2, 3...) to each row in a <em>partition</em>. Example: <code>ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)</code>"
+        explanation: "<strong>Strong Consistency:</strong> All reads see latest write immediately (slower, less available). <strong>Eventual Consistency:</strong> Reads may see stale data temporarily, but will converge (faster, more available)."
     },
     {
         id: 25,
-        category: "Database Design",
-        question: "What is a Surrogate Key?",
+        category: "Distributed Systems",
+        question: "What problem does consensus algorithm (like Raft or Paxos) solve?",
         options: [
-            "User's official key",
-            "Auto-generated key with no business meaning (like AUTO_INCREMENT)",
-            "Key for encrypting data",
-            "Foreign Key"
+            "Encrypting data between nodes",
+            "Agreeing on a value among distributed nodes despite failures",
+            "Balancing network traffic",
+            "Compressing data storage"
         ],
         correct: 1,
-        explanation: "<strong>Surrogate Key</strong> is an <em>auto-generated</em> key (ID, UUID...) with no business meaning, used only for unique identification. Opposite of <strong>Natural Key</strong> (like SSN, email) which has real-world meaning."
+        explanation: "<strong>Consensus algorithms</strong> ensure distributed nodes agree on a value or state despite network partitions and node failures. Used for leader election, distributed transactions, and configuration management."
     },
     {
         id: 26,
-        category: "SQL",
-        question: "What is the difference between VARCHAR and CHAR?",
+        category: "Distributed Systems",
+        question: "What is Leader Election and when is it needed?",
         options: [
-            "No difference",
-            "CHAR has fixed length, VARCHAR varies with data",
-            "VARCHAR is faster than CHAR",
-            "CHAR is only for special characters"
+            "Electing a team lead for a project; needed for all distributed systems",
+            "Choosing a coordinator node to manage writes/operations; needed for consistency",
+            "Selecting the fastest server; needed for load balancing",
+            "Choosing a backup server; needed for disaster recovery"
         ],
         correct: 1,
-        explanation: "<strong>CHAR(n)</strong>: Fixed n characters, padded with spaces if shorter.<br><strong>VARCHAR(n)</strong>: Variable, only stores needed characters + 1-2 bytes for length. VARCHAR saves more space."
+        explanation: "<strong>Leader Election</strong> selects one node as coordinator to handle writes or coordination tasks. Needed when you need single source of truth or coordination (e.g., Apache Kafka controllers, database primaries)."
     },
     {
         id: 27,
-        category: "Transaction",
-        question: "How do Optimistic Locking and Pessimistic Locking differ?",
+        category: "Distributed Systems",
+        question: "What is the Byzantine Generals Problem?",
         options: [
-            "No difference",
-            "Optimistic: Check conflict when updating, Pessimistic: Lock when reading",
-            "Optimistic is only for NoSQL",
-            "Pessimistic is faster than Optimistic"
+            "A military strategy game",
+            "Achieving consensus when some nodes may be malicious or fail arbitrarily",
+            "A network routing algorithm",
+            "A database sharding technique"
         ],
         correct: 1,
-        explanation: "<strong>Optimistic</strong>: No locking, checks version/timestamp when updating. Good for read-heavy.<br><strong>Pessimistic</strong>: Locks immediately when reading. Good for write-heavy, avoids conflicts."
+        explanation: "<strong>Byzantine Generals Problem</strong> is the challenge of reaching consensus when some participants may be malicious or send false information. Byzantine Fault Tolerance (BFT) algorithms handle this."
     },
     {
         id: 28,
-        category: "SQL",
-        question: "Which keyword starts a CTE (Common Table Expression)?",
+        category: "Distributed Systems",
+        question: "What is a Quorum in distributed systems?",
         options: [
-            "WITH",
-            "USING",
-            "AS",
-            "TEMP"
+            "A type of database index",
+            "Minimum number of nodes that must agree for an operation to proceed",
+            "A backup strategy",
+            "A network protocol"
         ],
-        correct: 0,
-        explanation: "<strong>CTE</strong> starts with <code>WITH</code>:<br><code>WITH cte_name AS (SELECT ...) SELECT * FROM cte_name</code>. Helps write complex queries more readably."
+        correct: 1,
+        explanation: "<strong>Quorum</strong> is the minimum number of nodes that must participate/vote for an operation. Common formula: W + R > N (write quorum + read quorum > total replicas) ensures strong consistency."
     },
     {
         id: 29,
-        category: "NoSQL",
-        question: "What does the CAP Theorem state?",
-        options: [
-            "How to optimize queries",
-            "Can only guarantee 2/3: Consistency, Availability, Partition tolerance",
-            "How to design indexes",
-            "Types of joins in NoSQL"
+        category: "Distributed Systems",
+        question: "What is the Two-Generals Problem?",
+        [
+            "A consensus problem where reliable communication cannot be guaranteed",
+            "A load balancing algorithm",
+            "A database replication strategy",
+            "A caching technique"
         ],
-        correct: 1,
-        explanation: "<strong>CAP Theorem</strong>: In distributed systems, you can only guarantee at most <strong>2/3</strong> properties:<br>• <strong>C</strong>onsistency<br>• <strong>A</strong>vailability<br>• <strong>P</strong>artition tolerance (required in distributed systems)"
+        correct: 0,
+        explanation: "<strong>Two-Generals Problem</strong> demonstrates that reliable communication over unreliable channels is theoretically impossible to guarantee. No acknowledgment scheme can ensure both parties agree with certainty."
     },
     {
         id: 30,
-        category: "SQL",
-        question: "What is the difference between COUNT(*) and COUNT(column)?",
+        category: "Distributed Systems",
+        question: "What is a vector clock used for?",
         options: [
-            "No difference",
-            "COUNT(*) counts all, COUNT(column) skips NULL",
-            "COUNT(column) is faster",
-            "COUNT(*) only counts unique values"
+            "Synchronizing physical time across servers",
+            "Tracking causality between events in distributed systems",
+            "Measuring CPU performance",
+            "Encrypting messages"
         ],
         correct: 1,
-        explanation: "<strong>COUNT(*)</strong>: Counts <em>all</em> records (including NULL).<br><strong>COUNT(column)</strong>: Only counts <em>non-NULL</em> values in that column."
+        explanation: "<strong>Vector clocks</strong> track partial ordering of events across distributed nodes. Each node maintains a counter; timestamps are compared to determine if events are concurrent or causally related."
     },
     {
         id: 31,
-        category: "Indexing",
-        question: "What is a Clustered Index?",
+        category: "Distributed Systems",
+        question: "What is the difference between a distributed lock and a local lock?",
         options: [
-            "Index for multiple columns",
-            "Index that determines the physical order of data in the table",
-            "Backup index",
-            "Index across multiple tables"
+            "No difference; both work the same way",
+            "Distributed lock coordinates across multiple servers; local lock is within single process",
+            "Distributed lock is faster than local lock",
+            "Local lock is only for databases"
         ],
         correct: 1,
-        explanation: "<strong>Clustered Index</strong> determines the <em>physical storage order</em> of data in the table. A table can only have 1 clustered index (usually the primary key). Non-clustered indexes point to the clustered index."
+        explanation: "<strong>Distributed lock</strong> (e.g., Redis Redlock, ZooKeeper) coordinates exclusive access across multiple servers/processes. <strong>Local lock</strong> (mutex) only works within a single process/machine."
     },
     {
         id: 32,
-        category: "SQL",
-        question: "When to use EXISTS instead of IN?",
+        category: "Distributed Systems",
+        question: "What is the Gossip protocol used for?",
         options: [
-            "Always use EXISTS",
-            "When subquery returns many rows, EXISTS is usually more efficient",
-            "When comparing numbers",
-            "When using with NULL"
+            "Securing communications between nodes",
+            "Propagating state information in a decentralized manner",
+            "Compressing data transfers",
+            "Load balancing requests"
         ],
         correct: 1,
-        explanation: "<strong>EXISTS</strong> is usually more efficient than <strong>IN</strong> when the subquery is large because EXISTS stops immediately when it finds the first match, while IN needs to materialize the entire subquery."
+        explanation: "<strong>Gossip protocol</strong> spreads information like epidemics - nodes randomly exchange state with peers. Eventually all nodes receive updates. Used in Cassandra, Redis Cluster, and failure detection."
     },
+
+    // ==================== CACHING STRATEGIES (33-42) ====================
     {
         id: 33,
-        category: "Database Design",
-        question: "What is an Entity-Relationship Diagram (ERD) used for?",
+        category: "Caching",
+        question: "What is the difference between Cache-Aside (Lazy Loading) and Write-Through caching?",
         options: [
-            "Write SQL code",
-            "Model database structure and relationships between entities",
-            "Optimize performance",
-            "Create backup"
+            "No difference; both update cache at same time",
+            "Cache-Aside loads on demand; Write-Through updates cache synchronously with database",
+            "Cache-Aside is for Redis only; Write-Through is for CDN only",
+            "Write-Through is faster than Cache-Aside"
         ],
         correct: 1,
-        explanation: "<strong>ERD</strong> is used to <em>design and visualize</em> database structure, showing <strong>entities</strong> (tables), <strong>attributes</strong> (columns), and <strong>relationships</strong> between them."
+        explanation: "<strong>Cache-Aside:</strong> App checks cache first, loads from DB on miss. <strong>Write-Through:</strong> Write goes to cache and DB simultaneously. Cache-Aside may have stale data; Write-Through is always consistent but slower."
     },
     {
         id: 34,
-        category: "SQL",
-        question: "What is a Self Join?",
+        category: "Caching",
+        question: "What is a Cache Stampede (Thundering Herd) and how do you prevent it?",
         options: [
-            "Join with the same table",
-            "Automatic join",
-            "Join without conditions",
-            "Join between 2 databases"
+            "Too many cache hits; prevent by rate limiting",
+            "Many requests hit DB simultaneously when cache expires; prevent by per-key locking or probabilistic early expiration",
+            "Cache server overload; prevent by adding more servers",
+            "Cache corruption; prevent by encryption"
         ],
-        correct: 0,
-        explanation: "<strong>Self Join</strong> is joining a table with <em>itself</em>. Use aliases to distinguish: <code>SELECT a.name, b.name FROM employees a JOIN employees b ON a.manager_id = b.id</code>"
+        correct: 1,
+        explanation: "<strong>Cache Stampede</strong> occurs when cache expires and many concurrent requests simultaneously hit the database. Solutions: per-key locking (only one process rebuilds), probabilistic early expiration, or background refresh."
     },
     {
         id: 35,
-        category: "NoSQL",
-        question: "What type of database is Neo4j?",
+        category: "Caching",
+        question: "What is the purpose of a CDN (Content Delivery Network)?",
         options: [
-            "Document database",
-            "Graph database",
-            "Key-value store",
-            "Column-family store"
+            "To encrypt user data",
+            "To distribute static content geographically close to users for lower latency",
+            "To replace the need for databases",
+            "To handle database transactions"
         ],
         correct: 1,
-        explanation: "<strong>Neo4j</strong> is a <strong>Graph Database</strong> - optimized for data with many <em>complex relationships</em> (nodes and edges). Great for social networks, recommendation engines."
+        explanation: "<strong>CDN</strong> caches static content (images, JS, CSS, videos) at edge locations worldwide. Users get content from nearest edge server, reducing latency and origin server load."
     },
     {
         id: 36,
-        category: "SQL",
-        question: "Which statement creates a table copy (structure only, no data)?",
+        category: "Caching",
+        question: "What is the difference between LRU and LFU cache eviction policies?",
         options: [
-            "CLONE TABLE",
-            "CREATE TABLE new_table LIKE old_table",
-            "COPY TABLE",
-            "DUPLICATE TABLE"
+            "LRU is for databases, LFU is for APIs",
+            "LRU evicts least recently used; LFU evicts least frequently used",
+            "LRU is faster than LFU",
+            "They are identical"
         ],
         correct: 1,
-        explanation: "In MySQL: <code>CREATE TABLE new_table LIKE old_table</code> creates a new table with the same structure (no data). Or: <code>CREATE TABLE new_table AS SELECT * FROM old_table WHERE 1=0</code>"
+        explanation: "<strong>LRU (Least Recently Used):</strong> Evicts items not accessed for longest time. <strong>LFU (Least Frequently Used):</strong> Evicts items with fewest accesses overall. LRU handles bursty access better; LFU favors popular items."
     },
     {
         id: 37,
-        category: "Transaction",
-        question: "What is Two-Phase Commit (2PC) used for?",
+        category: "Caching",
+        question: "What is Write-Behind (Write-Back) caching?",
         options: [
-            "Optimize query",
-            "Ensure atomicity for distributed transactions",
-            "Create index faster",
-            "Backup database"
+            "Writing to cache and database synchronously",
+            "Writing to cache first, then asynchronously to database",
+            "Writing only to database, never to cache",
+            "Writing to multiple caches simultaneously"
         ],
         correct: 1,
-        explanation: "<strong>Two-Phase Commit</strong> is a protocol that ensures <strong>atomicity</strong> for transactions spanning multiple databases/nodes: Phase 1 (prepare) and Phase 2 (commit/rollback)."
+        explanation: "<strong>Write-Behind</strong> writes to cache immediately and queues database writes for async processing. Fastest for writes but risks data loss if cache fails before DB is updated."
     },
     {
         id: 38,
-        category: "SQL",
-        question: "What is the CASE expression used for?",
+        category: "Caching",
+        question: "What is cache warming and when should you use it?",
         options: [
-            "Create new table",
-            "Conditional logic in SQL (IF-THEN-ELSE)",
-            "Create index",
-            "Connect database"
+            "Heating up cache servers physically; use in cold climates",
+            "Pre-populating cache before traffic hits; use before high-traffic events",
+            "Clearing the cache; use when data is stale",
+            "Compressing cache data; use for large objects"
         ],
         correct: 1,
-        explanation: "<strong>CASE</strong> is a conditional statement in SQL:<br><code>CASE WHEN condition THEN result ELSE other END</code>. Similar to IF-ELSE in programming languages."
+        explanation: "<strong>Cache warming</strong> pre-loads frequently accessed data into cache before expected traffic (e.g., before Black Friday). Prevents cold start and cache stampedes when traffic arrives."
     },
     {
         id: 39,
-        category: "Indexing",
-        question: "How does Index Fragmentation affect performance?",
+        category: "Caching",
+        question: "What is the difference between a local cache and a distributed cache?",
         options: [
-            "No effect",
-            "Slows down queries because index data is not contiguous",
-            "Speeds up writes",
-            "Reduces database size"
+            "Local cache is faster but not shared; distributed cache is shared but has network overhead",
+            "Local cache is larger than distributed cache",
+            "Distributed cache is only for databases",
+            "There is no difference in functionality"
         ],
-        correct: 1,
-        explanation: "<strong>Index Fragmentation</strong> occurs when index data becomes fragmented (due to many INSERT/DELETE operations). Increases I/O because data is not contiguous, need to <strong>REBUILD</strong> or <strong>REORGANIZE</strong> index to optimize."
+        correct: 0,
+        explanation: "<strong>Local cache</strong> (in-memory, e.g., Caffeine) is ultra-fast but per-instance, risking inconsistency. <strong>Distributed cache</strong> (Redis, Memcached) is shared across instances but has network latency."
     },
     {
         id: 40,
-        category: "SQL",
-        question: "Which statement deletes all data in a table but keeps the structure?",
+        category: "Caching",
+        question: "What is a cache key design best practice?",
         options: [
-            "DROP TABLE",
-            "DELETE FROM table (no WHERE)",
-            "TRUNCATE TABLE",
-            "Both B and C"
+            "Use random UUIDs for all keys",
+            "Include version, identifiers, and parameters that affect the data",
+            "Always use single character keys for efficiency",
+            "Never expire cache keys"
         ],
-        correct: 3,
-        explanation: "Both <strong>DELETE FROM table</strong> (no WHERE) and <strong>TRUNCATE TABLE</strong> delete data but keep the structure. TRUNCATE is faster, doesn't log row by row, resets auto-increment."
+        correct: 1,
+        explanation: "<strong>Good cache keys</strong> include: entity type, version (for invalidation), identifiers, and query parameters that affect output. Example: <code>user:v2:12345:profile</code> enables targeted invalidation."
     },
     {
         id: 41,
-        category: "Database Design",
-        question: "How is a One-to-Many relationship represented?",
+        category: "Caching",
+        question: "What is the purpose of cache versioning?",
         options: [
-            "Create intermediate table",
-            "Foreign key on the 'many' side pointing to the 'one' side",
-            "Merge into 1 table",
-            "Use array"
+            "To track how many times cache was accessed",
+            "To invalidate cache without waiting for TTL by changing version prefix",
+            "To compress cache entries",
+            "To encrypt cache data"
         ],
         correct: 1,
-        explanation: "<strong>One-to-Many</strong>: Place <strong>foreign key</strong> on the 'many' side (the many side) pointing to the primary key of the 'one' side (the one side). Example: 1 Department has many Employees."
+        explanation: "<strong>Cache versioning</strong> embeds version in key (e.g., <code>v1:user:123</code>). When data schema or logic changes, increment version (<code>v2:user:123</code>) - old keys naturally expire, instant global invalidation."
     },
     {
         id: 42,
-        category: "SQL",
-        question: "How do RANK() and DENSE_RANK() differ?",
+        category: "Caching",
+        question: "In a multi-layer caching strategy, what typically goes in each layer?",
         options: [
-            "No difference",
-            "RANK() skips ranks after tie, DENSE_RANK() doesn't skip",
-            "DENSE_RANK() is only for integers",
-            "RANK() is faster"
+            "L1: Browser, L2: CDN, L3: Application cache, L4: Database cache",
+            "L1: Database, L2: Browser, L3: CDN",
+            "Only one layer is recommended",
+            "L1: Hard disk, L2: RAM, L3: Network"
         ],
-        correct: 1,
-        explanation: "With data [100, 100, 90]:<br>• <strong>RANK()</strong>: 1, 1, 3 (skips 2)<br>• <strong>DENSE_RANK()</strong>: 1, 1, 2 (doesn't skip)"
+        correct: 0,
+        explanation: "<strong>Multi-layer caching:</strong><br>• L1: Browser cache (private, fastest)<br>• L2: CDN edge cache (geographic)<br>• L3: Application cache (Redis/Memcached)<br>• L4: Database cache (query cache, buffer pool)"
     },
+
+    // ==================== MESSAGE QUEUES (43-50) ====================
     {
         id: 43,
-        category: "NoSQL",
-        question: "What type of database is Cassandra?",
+        category: "Message Queues",
+        question: "What is the difference between point-to-point and publish-subscribe messaging?",
         options: [
-            "Document store",
-            "Wide-column store (Column-family)",
-            "Graph database",
-            "Key-value store"
+            "No difference; both deliver to one consumer",
+            "Point-to-point: one consumer per message; Pub-Sub: multiple subscribers receive copy",
+            "Point-to-point is faster than Pub-Sub",
+            "Pub-Sub is only for Kafka"
         ],
         correct: 1,
-        explanation: "<strong>Cassandra</strong> is a <strong>Wide-Column Store</strong> (Column-Family). Each row can have different numbers of columns. Good for write-heavy, time-series data."
+        explanation: "<strong>Point-to-Point:</strong> Queue delivers to exactly one consumer (load balancing). <strong>Pub-Sub:</strong> Topic broadcasts to all subscribers (fan-out). Different use cases, different guarantees."
     },
     {
         id: 44,
-        category: "SQL",
-        question: "Which query finds employees with salary higher than average?",
+        category: "Message Queues",
+        question: "What is the key difference between Kafka and traditional message queues (RabbitMQ/ActiveMQ)?",
         options: [
-            "SELECT * FROM employees WHERE salary > AVG(salary)",
-            "SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)",
-            "SELECT * FROM employees HAVING salary > AVG(salary)",
-            "SELECT * FROM employees WHERE salary > AVERAGE"
+            "Kafka is slower than traditional queues",
+            "Kafka is a log-based stream; traditional queues delete messages after consumption",
+            "Kafka only supports point-to-point",
+            "Traditional queues don't support persistence"
         ],
         correct: 1,
-        explanation: "Need to use <strong>subquery</strong>: <code>SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees)</code>. Cannot use aggregate function directly in WHERE."
+        explanation: "<strong>Kafka</strong> is a distributed log - messages persist and can be replayed. Consumers track their offset. <strong>Traditional queues</strong> delete messages after acknowledgment. Kafka excels at event sourcing and stream processing."
     },
     {
         id: 45,
-        category: "Transaction",
-        question: "What problem does Snapshot Isolation solve?",
+        category: "Message Queues",
+        question: "What are message acknowledgments (acks) used for?",
         options: [
-            "Deadlock",
-            "Non-repeatable reads and Phantom reads",
-            "Disk full",
-            "Network latency"
+            "To encrypt messages",
+            "To confirm successful processing and prevent message loss",
+            "To compress message size",
+            "To route messages to specific queues"
         ],
         correct: 1,
-        explanation: "<strong>Snapshot Isolation</strong> ensures a transaction sees a <em>snapshot</em> of the database at the start of the transaction, preventing <strong>non-repeatable reads</strong> and <strong>phantom reads</strong>."
+        explanation: "<strong>Acknowledgments</strong> ensure at-least-once delivery. Consumer processes message, then acknowledges. If no ack received (crash/timeout), message is redelivered to another consumer."
     },
     {
         id: 46,
-        category: "SQL",
-        question: "What is the difference between VIEW and MATERIALIZED VIEW?",
+        category: "Message Queues",
+        question: "What is a Dead Letter Queue (DLQ)?",
         options: [
-            "No difference",
-            "VIEW is virtual, MATERIALIZED VIEW stores physical results",
-            "MATERIALIZED VIEW is faster than VIEW",
-            "Both B and C"
+            "A queue for expired messages only",
+            "A queue for messages that failed processing after max retry attempts",
+            "A queue for priority messages",
+            "A backup queue for the main queue"
         ],
-        correct: 3,
-        explanation: "<strong>VIEW</strong>: Virtual table, re-queries each time called.<br><strong>MATERIALIZED VIEW</strong>: Stores physical results, needs refresh. Faster for complex queries but data may be stale."
+        correct: 1,
+        explanation: "<strong>Dead Letter Queue</strong> receives messages that failed processing after maximum retry attempts. Prevents blocking the main queue and allows manual inspection/reprocessing of poison messages."
     },
     {
         id: 47,
-        category: "Database Design",
-        question: "Why should SELECT * not be used in production?",
+        category: "Message Queues",
+        question: "What is message ordering guarantee in Kafka?",
         options: [
-            "Longer to write",
-            "Fetches unnecessary columns, increases network traffic, breaks easily when schema changes",
-            "Cannot be used with JOIN",
-            "Slower when there is index"
+            "No ordering guarantee in any situation",
+            "Ordering guaranteed within a partition, not across partitions",
+            "Global ordering across all partitions and topics",
+            "Ordering only for the first 1000 messages"
         ],
         correct: 1,
-        explanation: "<strong>SELECT *</strong> should be avoided because:<br>• Fetches unnecessary columns → increases I/O and network<br>• Breaks easily when columns are added/removed<br>• Cannot use covering index effectively"
+        explanation: "<strong>Kafka ordering:</strong> Messages are ordered within a partition. If ordering matters for related messages, use same partition key - they'll go to same partition. No ordering guarantee across partitions."
     },
     {
         id: 48,
-        category: "SQL",
-        question: "What is the PIVOT operation used for?",
+        category: "Message Queues",
+        question: "What is the purpose of consumer groups in Kafka?",
         options: [
-            "Rotate table from row-based to column-based",
-            "Create index",
-            "Backup database",
-            "Connect 2 tables"
+            "To organize consumers by company department",
+            "To share message processing load - each partition consumed by one member",
+            "To encrypt messages between consumers",
+            "To prioritize certain consumers"
         ],
-        correct: 0,
-        explanation: "<strong>PIVOT</strong> transforms data from <em>row-based</em> to <em>column-based</em>. Example: transform sales data by month (rows) into columns Jan, Feb, Mar..."
+        correct: 1,
+        explanation: "<strong>Consumer groups</strong> enable horizontal scaling. Each partition is consumed by exactly one group member. Adding consumers to group redistributes partitions (rebalancing). Multiple groups can independently consume same topic."
     },
     {
         id: 49,
-        category: "NoSQL",
-        question: "What is Sharding in a database?",
+        category: "Message Queues",
+        question: "What is the difference between at-most-once, at-least-once, and exactly-once delivery?",
         options: [
-            "Create index",
-            "Split data into multiple parts stored on different servers",
-            "Encrypt data",
-            "Backup database"
+            "They are all the same guarantee",
+            "At-most-once: may lose messages; At-least-once: may duplicate; Exactly-once: neither",
+            "Exactly-once is the default for all queues",
+            "At-most-once is the most reliable"
         ],
         correct: 1,
-        explanation: "<strong>Sharding</strong> is a technique to <em>split data</em> (by range, hash, or geo) across multiple servers to <strong>scale horizontally</strong> and distribute load."
+        explanation: "<strong>At-most-once:</strong> Fire and forget, may lose messages.<br><strong>At-least-once:</strong> Retry until ack, may duplicate.<br><strong>Exactly-once:</strong> No loss, no duplicates (hardest to implement, requires idempotency)."
     },
     {
         id: 50,
-        category: "SQL",
-        question: "What is a Query Execution Plan used for?",
+        category: "Message Queues",
+        question: "What is backpressure in message queue systems?",
         options: [
-            "Create new table",
-            "Analyze and optimize how the database executes queries",
-            "Backup data",
-            "Create new user"
+            "Water pressure in cooling systems",
+            "Mechanism to handle when producers outpace consumers",
+            "Network bandwidth optimization",
+            "Message compression technique"
         ],
         correct: 1,
-        explanation: "<strong>Execution Plan</strong> shows how the database will <em>execute the query</em> (which index to use, join order...). Used to <strong>optimize performance</strong> and debug slow queries."
+        explanation: "<strong>Backpressure</strong> handles scenarios where message production exceeds consumption capacity. Solutions: blocking producers, dropping messages, increasing consumers, or using buffering to prevent system overload."
     },
+
+    // ==================== CONTAINER ORCHESTRATION (51-58) ====================
     {
         id: 51,
-        category: "Advanced SQL",
-        question: "What does the LAG() window function do?",
+        category: "Containers",
+        question: "What is the difference between a Docker image and a Docker container?",
         options: [
-            "Creates a delay in query execution",
-            "Returns the value from the previous row in the partition",
-            "Sorts data in descending order",
-            "Locks the table for reading"
+            "They are the same thing",
+            "Image is a template; container is a running instance of that template",
+            "Image is larger than container",
+            "Container is persistent, image is temporary"
         ],
         correct: 1,
-        explanation: "<strong>LAG()</strong> lets you look at the <em>previous row</em> without joining. Example: Compare today's sales with yesterday's using <code>LAG(sales, 1) OVER (ORDER BY date)</code>."
+        explanation: "<strong>Docker Image:</strong> Read-only template with application code + dependencies.<br><strong>Docker Container:</strong> Runnable instance of an image with writable layer. Multiple containers can run from one image."
     },
     {
         id: 52,
-        category: "Advanced SQL",
-        question: "What does LEAD() function do compared to LAG()?",
+        category: "Kubernetes",
+        question: "What is a Kubernetes Pod?",
         options: [
-            "LEAD looks at the next row, LAG looks at the previous row",
-            "LEAD is faster than LAG",
-            "LEAD works only on numbers, LAG works on all types",
-            "No difference between them"
+            "A single container",
+            "The smallest deployable unit that can contain one or more containers",
+            "A type of service discovery",
+            "A persistent storage volume"
         ],
-        correct: 0,
-        explanation: "<strong>LEAD()</strong> looks at the <em>next row</em> (forward), while <strong>LAG()</strong> looks at the <em>previous row</em> (backward). Use LEAD to see what happens next, LAG to see what happened before."
+        correct: 1,
+        explanation: "<strong>Pod</strong> is the smallest deployable unit in Kubernetes, containing one or more tightly coupled containers that share network namespace and storage. Containers in a pod are always co-located."
     },
     {
         id: 53,
-        category: "Advanced SQL",
-        question: "What does NTILE(n) do?",
+        category: "Kubernetes",
+        question: "What is the purpose of a Kubernetes Deployment?",
         options: [
-            "Divides rows into n equal buckets/groups",
-            "Creates n copies of the table",
-            "Splits a string into n parts",
-            "Allocates n bytes of memory"
+            "To store application secrets",
+            "To declare desired state for pods and manage rolling updates",
+            "To provide external access to services",
+            "To monitor application metrics"
         ],
-        correct: 0,
-        explanation: "<strong>NTILE(4)</strong> splits all rows into <em>4 equal groups</em> (quartiles). Great for finding top 25% performers or creating percentile rankings."
+        correct: 1,
+        explanation: "<strong>Deployment</strong> manages ReplicaSets, which manage Pods. It enables declarative updates: specify desired state (replicas, image version), and Kubernetes handles rolling updates, rollbacks, and self-healing."
     },
     {
         id: 54,
-        category: "Advanced SQL",
-        question: "What is a Recursive CTE used for?",
+        category: "Kubernetes",
+        question: "What is the difference between a Kubernetes Service and an Ingress?",
         options: [
-            "Repeating the same query multiple times",
-            "Querying hierarchical/tree-structured data",
-            "Creating infinite loops",
-            "Backing up data recursively"
+            "They are the same",
+            "Service exposes pods internally/externally; Ingress routes HTTP/HTTPS traffic with rules",
+            "Service is only for databases; Ingress is for applications",
+            "Ingress is faster than Service"
         ],
         correct: 1,
-        explanation: "<strong>Recursive CTE</strong> is perfect for <em>hierarchical data</em> like org charts or folder structures. It keeps calling itself until it reaches the end of the tree."
+        explanation: "<strong>Service:</strong> Exposes pods (ClusterIP, NodePort, LoadBalancer).<br><strong>Ingress:</strong> Layer 7 HTTP/HTTPS router with rules (host, path-based routing). Ingress typically sits in front of Services."
     },
     {
         id: 55,
-        category: "Advanced SQL",
-        question: "What is a Correlated Subquery?",
+        category: "Kubernetes",
+        question: "What is a Kubernetes ConfigMap used for?",
         options: [
-            "A subquery that depends on the outer query",
-            "A subquery that runs faster than the main query",
-            "A query that correlates two tables",
-            "A backup query for failed main queries"
+            "Storing sensitive data like passwords",
+            "Storing non-sensitive configuration data as key-value pairs",
+            "Mapping network ports",
+            "Creating database connections"
         ],
-        correct: 0,
-        explanation: "<strong>Correlated Subquery</strong> runs <em>once for each row</em> in the outer query. It references columns from the outer query, making it slower but powerful for row-by-row comparisons."
+        correct: 1,
+        explanation: "<strong>ConfigMap</strong> stores non-sensitive configuration (environment variables, config files). For secrets (passwords, tokens), use <strong>Secret</strong> objects which are base64-encoded and can be encrypted at rest."
     },
     {
         id: 56,
-        category: "Advanced SQL",
-        question: "What is SQL Injection?",
+        category: "Kubernetes",
+        question: "What is a Kubernetes Horizontal Pod Autoscaler (HPA)?",
         options: [
-            "Injecting SQL code into a database engine",
-            "A security attack where malicious SQL is inserted via user input",
-            "Adding SQL functions to a programming language",
-            "Optimizing SQL queries with hints"
+            "A tool for vertical scaling of pod resources",
+            "Automatically scales number of pod replicas based on CPU/memory/custom metrics",
+            "A network load balancer",
+            "A storage provisioning tool"
         ],
         correct: 1,
-        explanation: "<strong>SQL Injection</strong> is when attackers sneak <em>malicious SQL</em> through user inputs (like search boxes). Example: entering <code>'; DROP TABLE users; --</code> to delete data. Always use parameterized queries!"
+        explanation: "<strong>HPA</strong> automatically adjusts number of pod replicas based on observed metrics (CPU, memory, or custom metrics like queue depth). Scales up when load increases, scales down when load decreases."
     },
     {
         id: 57,
-        category: "Advanced SQL",
-        question: "What's the main difference between Stored Procedures and Functions?",
+        category: "Kubernetes",
+        question: "What is the purpose of liveness and readiness probes?",
         options: [
-            "Functions can return values, stored procedures cannot",
-            "Stored procedures can have side effects (INSERT/UPDATE), functions should be pure",
-            "Stored procedures are faster",
-            "Functions can only do math"
+            "Both are for the same purpose - checking if pod exists",
+            "Liveness: restart unhealthy pods; Readiness: determine if pod can receive traffic",
+            "Liveness is for metrics; Readiness is for logging",
+            "They are deprecated features"
         ],
         correct: 1,
-        explanation: "<strong>Stored Procedures</strong> can modify data and don't have to return values. <strong>Functions</strong> should be pure (no side effects) and must return a value. Think: procedures 'do things', functions 'calculate things'."
+        explanation: "<strong>Liveness probe:</strong> Detects deadlocked/infinite-looping containers; Kubernetes restarts them.<br><strong>Readiness probe:</strong> Determines if container is ready to serve requests; removes from Service endpoints if not ready."
     },
     {
         id: 58,
-        category: "Advanced SQL",
-        question: "What is a Database Trigger?",
+        category: "Containers",
+        question: "What is a multi-stage Docker build and what is its benefit?",
         options: [
-            "A button that starts a query",
-            "Code that automatically runs when certain events happen (INSERT/UPDATE/DELETE)",
-            "A tool for importing data",
-            "A type of database index"
+            "Building for multiple architectures; benefit is broader compatibility",
+            "Using multiple FROM statements to separate build and runtime environments; smaller images",
+            "Building multiple images in parallel; faster builds",
+            "Using multiple Dockerfiles; better organization"
         ],
         correct: 1,
-        explanation: "<strong>Triggers</strong> are like <em>automatic reactions</em>. When someone INSERTS a row, the trigger can automatically update an audit log or validate data. They fire without being called directly."
+        explanation: "<strong>Multi-stage builds</strong> use multiple FROM statements. Build stage has all compilers/tools; final stage copies only artifacts. Result: smaller, more secure production images without build dependencies."
     },
+
+    // ==================== DATABASE SCALING (59-66) ====================
     {
         id: 59,
-        category: "Advanced SQL",
-        question: "Which is better for preventing SQL Injection: string concatenation or parameterized queries?",
+        category: "Database Scaling",
+        question: "What is database sharding and what problem does it solve?",
         options: [
-            "String concatenation is faster",
-            "Parameterized queries - they separate code from data",
-            "Both are equally safe",
-            "SQL injection cannot be prevented"
+            "Encrypting database; solves security",
+            "Splitting data across multiple servers; solves horizontal scaling",
+            "Backing up database; solves disaster recovery",
+            "Indexing all columns; solves query speed"
         ],
         correct: 1,
-        explanation: "<strong>Parameterized queries</strong> treat user input as <em>data only</em>, never as SQL code. String concatenation lets attackers inject commands. Always use parameters: <code>SELECT * FROM users WHERE id = ?</code>"
+        explanation: "<strong>Sharding</strong> partitions data across multiple servers (shards). Each shard holds a subset of data. Solves horizontal scaling when single server can't handle data size or query load."
     },
     {
         id: 60,
-        category: "Advanced SQL",
-        question: "When should you use a Recursive CTE vs a simple JOIN?",
+        category: "Database Scaling",
+        question: "What is the difference between vertical and horizontal database scaling?",
         options: [
-            "Always use Recursive CTE for better performance",
-            "Use Recursive CTE for hierarchical/tree data with unknown depth",
-            "JOIN is always better",
-            "Recursive CTE is only for MySQL"
+            "Vertical adds more servers; horizontal upgrades existing server",
+            "Vertical upgrades server resources (CPU/RAM); horizontal adds more servers",
+            "They are the same thing",
+            "Vertical is only for NoSQL; horizontal is only for SQL"
         ],
         correct: 1,
-        explanation: "Use <strong>Recursive CTE</strong> when you don't know how many levels deep the data goes (like an org chart where managers have managers). Regular JOINs need to know the depth in advance."
+        explanation: "<strong>Vertical scaling (scale up):</strong> Bigger server (more CPU, RAM). Has limits.<br><strong>Horizontal scaling (scale out):</strong> More servers (sharding, replicas). More complex but virtually unlimited."
     },
     {
         id: 61,
-        category: "Performance",
-        question: "What is Query Plan Analysis used for?",
+        category: "Database Scaling",
+        question: "What are common database sharding strategies?",
         options: [
-            "Creating database diagrams",
-            "Understanding how the database executes your query and finding bottlenecks",
-            "Planning database backups",
-            "Designing table schemas"
+            "Only hash-based sharding",
+            "Hash-based, range-based, and directory-based sharding",
+            "Only random sharding",
+            "Only alphabetical sharding"
         ],
         correct: 1,
-        explanation: "<strong>Query Plan Analysis</strong> shows you the <em>step-by-step</em> of how your query runs. It reveals if the database is doing expensive full table scans instead of using indexes."
+        explanation: "<strong>Sharding strategies:</strong><br>• <strong>Hash-based:</strong> Shard = hash(key) % N (good distribution)<br>• <strong>Range-based:</strong> By key range (A-M, N-Z) (easy range queries)<br>• <strong>Directory-based:</strong> Lookup service maps key to shard (flexibility)"
     },
     {
         id: 62,
-        category: "Performance",
-        question: "What is Connection Pooling?",
+        category: "Database Scaling",
+        question: "What is database replication and what are the common types?",
         options: [
-            "A swimming pool for database administrators",
-            "Reusing database connections instead of creating new ones each time",
-            "Pooling query results in memory",
-            "Connecting multiple databases together"
+            "Duplicating code; types: full and partial",
+            "Copying data to multiple servers; types: master-slave and master-master",
+            "Backing up data; types: daily and weekly",
+            "Compressing data; types: lossy and lossless"
         ],
         correct: 1,
-        explanation: "<strong>Connection Pooling</strong> keeps a <em>pool of ready connections</em> open. Instead of the expensive 'handshake' every time, apps grab an existing connection. Like keeping a taxi waiting instead of calling a new one."
+        explanation: "<strong>Replication</strong> copies data across servers for availability and read scaling.<br>• <strong>Master-Slave:</strong> Master writes, slaves read (asynchronous)<br>• <strong>Master-Master:</strong> Both accept writes (complex conflict resolution)"
     },
     {
         id: 63,
-        category: "Performance",
-        question: "What are Read Replicas?",
+        category: "Database Scaling",
+        question: "What is read/write splitting in database architecture?",
         options: [
-            "Copies of data for backup only",
-            "Read-only copies of the database to distribute read traffic",
-            "Duplicate tables in the same database",
-            "Cached query results"
+            "Splitting tables into smaller tables",
+            "Routing write queries to master and read queries to replicas",
+            "Dividing database connections between apps",
+            "Separating schema from data"
         ],
         correct: 1,
-        explanation: "<strong>Read Replicas</strong> are <em>copies</em> of your main database that only handle SELECT queries. They spread read traffic across multiple servers, like having multiple checkout lanes at a store."
+        explanation: "<strong>Read/Write Splitting</strong> directs write operations (INSERT, UPDATE, DELETE) to the master/primary and read operations (SELECT) to replicas. Scales read capacity while maintaining consistency for writes."
     },
     {
         id: 64,
-        category: "Performance",
-        question: "What is Database Caching?",
+        category: "Database Scaling",
+        question: "What is a potential problem with consistent hashing in sharding?",
         options: [
-            "Storing data in hidden folders",
-            "Storing frequently accessed data in fast memory (Redis/Memcached) to reduce database load",
-            "Compressing database files",
-            "Creating database backups"
+            "It doesn't distribute data evenly",
+            "Adding/removing nodes requires minimal data movement but may cause temporary hotspots",
+            "It only works with string keys",
+            "It is slower than modulo hashing"
         ],
         correct: 1,
-        explanation: "<strong>Caching</strong> stores popular data in <em>super-fast memory</em> (like Redis). Instead of querying the database every time, apps check the cache first - like keeping frequently used tools on your desk instead of the storage room."
+        explanation: "<strong>Consistent hashing</strong> minimizes data movement when adding/removing nodes (only K/n keys move). However, adding one node only takes keys from adjacent nodes, potentially causing uneven load (solved with virtual nodes)."
     },
     {
         id: 65,
-        category: "Performance",
-        question: "What is Table Partitioning?",
+        category: "Database Scaling",
+        question: "What is the challenge of cross-shard queries (scatter-gather)?",
         options: [
-            "Dividing a table into smaller physical pieces based on a column value",
-            "Splitting data across different databases",
-            "Creating backup copies of tables",
-            "Encrypting table data"
+            "They are faster than single-shard queries",
+            "They require querying multiple shards and aggregating results, which is slower and complex",
+            "They are not possible in sharded databases",
+            "They require special hardware"
         ],
-        correct: 0,
-        explanation: "<strong>Partitioning</strong> splits a huge table into <em>smaller chunks</em> (like by date or region). Queries only scan relevant partitions, not the entire table. Like organizing a filing cabinet by year instead of one big pile."
+        correct: 1,
+        explanation: "<strong>Cross-shard queries</strong> must query all (or many) shards and aggregate results. Slow and resource-intensive. Design sharding key to minimize cross-shard operations (keep related data together)."
     },
     {
         id: 66,
-        category: "Performance",
-        question: "Which type of database cache invalidation is safest but slowest?",
+        category: "Database Scaling",
+        question: "What is a replica lag and why does it matter?",
         options: [
-            "Write-through (update cache and DB together)",
-            "Cache-aside (lazy loading)",
-            "Write-behind (async updates)",
-            "No invalidation"
-        ],
-        correct: 0,
-        explanation: "<strong>Write-through</strong> updates both cache and database together. It's <em>slower</em> because every write does double work, but data is always consistent. Like updating both your notebook and the shared document simultaneously."
-    },
-    {
-        id: 67,
-        category: "Performance",
-        question: "What is the N+1 Query Problem?",
-        options: [
-            "Running N queries plus 1 backup query",
-            "Running one query to get N items, then N more queries to get related data",
-            "A mathematical problem in databases",
-            "Adding N+1 indexes to a table"
+            "Network delay between data centers; doesn't matter much",
+            "Delay between master write and replica visibility; can cause stale reads",
+            "Time to create a replica; affects deployment speed",
+            "Time to backup database; affects recovery time"
         ],
         correct: 1,
-        explanation: "<strong>N+1 Problem</strong>: You fetch 100 users (1 query), then loop through and fetch each user's orders (100 queries) = 101 total! Fix with <strong>JOIN</strong> or <strong>eager loading</strong>."
+        explanation: "<strong>Replica lag</strong> is the delay between write on master and visibility on replica. Applications reading from replicas may see stale data. Monitor lag; if too high, consider reading from master or using synchronous replication."
+    },
+
+    // ==================== CDN & EDGE COMPUTING (67-70) ====================
+    {
+        id: 67,
+        category: "CDN & Edge",
+        question: "What is edge computing and how does it differ from cloud computing?",
+        options: [
+            "They are the same thing",
+            "Edge computing processes data closer to the source/user; cloud is centralized",
+            "Edge computing is only for mobile apps",
+            "Cloud computing is faster than edge computing"
+        ],
+        correct: 1,
+        explanation: "<strong>Edge computing</strong> processes data at the network edge (close to users/devices), reducing latency and bandwidth. <strong>Cloud computing</strong> is centralized in data centers. Often used together."
     },
     {
         id: 68,
-        category: "Performance",
-        question: "What is the benefit of Range Partitioning by date?",
+        category: "CDN & Edge",
+        question: "What is cache invalidation and what are the common strategies?",
         options: [
-            "It makes dates look prettier",
-            "Old partitions can be archived/deleted without affecting recent data",
-            "It automatically sorts data",
-            "It encrypts old data"
+            "Deleting the cache server; strategy: immediate deletion",
+            "Removing stale content from cache; strategies: TTL expiration, active purge, versioning",
+            "Encrypting cached data; strategy: SSL only",
+            "Moving cache to different region; strategy: geo-migration"
         ],
         correct: 1,
-        explanation: "<strong>Range Partitioning</strong> by date lets you <em>drop old partitions</em> (like data from 2020) instantly without DELETE statements. Queries for recent data only scan recent partitions."
+        explanation: "<strong>Cache invalidation:</strong><br>• <strong>TTL:</strong> Auto-expire after time<br>• <strong>Active purge:</strong> API call to remove specific content<br>• <strong>Versioning:</strong> Change URL to bypass cache<br>Hard problem: 'There are only two hard things in CS...'"
     },
     {
         id: 69,
-        category: "Security",
-        question: "What is Encryption at Rest?",
+        category: "CDN & Edge",
+        question: "What is the difference between push and pull CDN strategies?",
         options: [
-            "Encrypting data when it's being sent over the network",
-            "Encrypting data stored on disk",
-            "Encrypting data in RAM",
-            "Encrypting backup tapes only"
+            "Push: origin sends to CDN; Pull: CDN fetches on demand",
+            "Push is for small files; Pull is for large files",
+            "Push is faster than Pull always",
+            "They are the same approach"
         ],
-        correct: 1,
-        explanation: "<strong>Encryption at Rest</strong> scrambles data on the <em>hard drive</em>. If someone steals the physical disk, they can't read it. Different from Encryption in Transit (network)."
+        correct: 0,
+        explanation: "<strong>Push CDN:</strong> You upload content to CDN directly (good for large files, predictable content).<br><strong>Pull CDN:</strong> CDN fetches from origin on first request (automatic, good for websites)."
     },
     {
         id: 70,
-        category: "Security",
-        question: "What is Encryption in Transit?",
+        category: "CDN & Edge",
+        question: "What is an origin shield in CDN architecture?",
         options: [
-            "Encrypting data on the hard disk",
-            "Encrypting data while traveling over the network (TLS/SSL)",
-            "Encrypting data in backups",
-            "Encrypting data before deletion"
+            "A firewall protecting the origin server",
+            "A secondary cache layer between edge servers and origin to reduce origin load",
+            "An SSL certificate for origin server",
+            "A backup origin server"
         ],
         correct: 1,
-        explanation: "<strong>Encryption in Transit</strong> protects data as it travels between your app and database (like HTTPS). Prevents eavesdroppers from reading data on the wire."
+        explanation: "<strong>Origin Shield</strong> is an additional caching layer. All CDN edge servers fetch from the shield rather than directly from origin. Reduces origin load when many edge servers request same uncached content."
     },
+
+    // ==================== SERVICE DISCOVERY & SERVICE MESH (71-78) ====================
     {
         id: 71,
-        category: "Security",
-        question: "What is RBAC in database security?",
-        options: [
-            "Random Based Access Control",
-            "Role-Based Access Control - permissions assigned to roles, not individual users",
-            "Read-Backup-Access-Create",
-            "Row-Based Access Control"
-        ],
-        correct: 1,
-        explanation: "<strong>RBAC</strong> (Role-Based Access Control) gives permissions to <em>roles</em> (like 'analyst', 'admin'), then assigns users to roles. Easier than managing permissions for each person individually."
+        category: "Service Discovery",
+        type: "open",
+        question: "Scenario: You have 50 microservices running in Kubernetes. Services need to discover and communicate with each other dynamically as pods are created and destroyed. How would you implement service discovery?",
+        answer: "1. Use Kubernetes DNS-based service discovery (Services get DNS entries like service-name.namespace.svc.cluster.local)<br>2. Use Headless Services for direct pod-to-pod communication<br>3. Implement a service mesh (Istio/Linkerd) for advanced traffic management<br>4. Use a service registry like Consul or Eureka for multi-cluster scenarios<br>5. Implement client-side load balancing with service mesh sidecars",
+        explanation: "Kubernetes provides built-in DNS service discovery. For advanced scenarios, service meshes add features like traffic splitting, mTLS, and observability without changing application code."
     },
     {
         id: 72,
-        category: "Security",
-        question: "How can prepared statements prevent SQL Injection?",
-        options: [
-            "They make queries run faster",
-            "They separate SQL code from user data, treating input as values only",
-            "They encrypt the query",
-            "They check user passwords"
-        ],
-        correct: 1,
-        explanation: "<strong>Prepared statements</strong> send the SQL <em>structure</em> first, then data separately. The database knows input is <strong>never</strong> code, so malicious input can't execute commands."
+        category: "Service Mesh",
+        type: "open",
+        question: "Scenario: Your microservices communicate over HTTP, but you need to add mutual TLS (mTLS) encryption between all services without modifying application code. How would you achieve this?",
+        answer: "1. Deploy a service mesh (Istio, Linkerd, or Consul Connect)<br>2. Inject sidecar proxies alongside each service<br>3. Configure mesh-wide mTLS policy (PERMISSIVE → STRICT mode)<br>4. The sidecars automatically encrypt/decrypt traffic<br>5. Applications continue using plain HTTP; sidecars handle TLS transparently",
+        explanation: "Service mesh uses sidecar pattern to add capabilities (mTLS, auth, observability) without application changes. Istio's Citadel manages certificates automatically."
     },
     {
         id: 73,
-        category: "Security",
-        question: "What is Row-Level Security (RLS)?",
-        options: [
-            "Security that only applies to certain rows in the office",
-            "Restricting which rows a user can see based on their permissions",
-            "Encrypting individual rows differently",
-            "A backup strategy for important rows"
-        ],
-        correct: 1,
-        explanation: "<strong>Row-Level Security</strong> automatically filters rows based on <em>who's asking</em>. A sales rep sees only their customers' data, even though the table contains all customers."
+        category: "Service Mesh",
+        type: "open",
+        question: "Scenario: You want to implement canary deployments where 5% of traffic goes to the new version of a service. How can you achieve this with a service mesh?",
+        answer: "1. Deploy both versions of the service<br>2. Configure VirtualService with weight-based routing<br>3. Set weights: 95% to v1, 5% to v2<br>4. Monitor error rates and latency<br>5. Gradually shift traffic using automated canary analysis or manual promotion<br>6. Rollback immediately if errors exceed threshold",
+        explanation: "Service meshes provide fine-grained traffic control without application changes. Istio's VirtualService and DestinationRule enable sophisticated deployment strategies."
     },
     {
         id: 74,
-        category: "Security",
-        question: "What is Database Audit Logging?",
-        options: [
-            "Counting the number of tables",
-            "Recording who did what and when in the database",
-            "Checking database disk space",
-            "Testing database performance"
-        ],
-        correct: 1,
-        explanation: "<strong>Audit Logging</strong> keeps a <em>trail of all actions</em> - who accessed what data, when they did it, and what changed. Essential for compliance (SOX, HIPAA) and detecting breaches."
+        category: "Service Discovery",
+        type: "open",
+        question: "Scenario: Your services run across multiple cloud providers (AWS, GCP) and on-premise. You need a unified service discovery mechanism. What's your approach?",
+        answer: "1. Deploy HashiCorp Consul as a centralized service registry<br>2. Use Consul agents on each node to register services<br>3. Implement health checks for automatic deregistration of unhealthy instances<br>4. Use Consul DNS or HTTP API for service lookup<br>5. Consider Consul Connect for cross-platform service mesh<br>6. Alternatively, use Kubernetes with Federation or Google Anthos/Istio multi-cluster",
+        explanation: "Consul works across platforms and clouds, providing a unified service registry. Kubernetes Federation or managed mesh solutions are alternatives for K8s-heavy environments."
     },
     {
         id: 75,
-        category: "Backup & Recovery",
-        question: "What is a Full Backup?",
-        options: [
-            "Backing up only changed data",
-            "A complete copy of all database data",
-            "Backing up just the indexes",
-            "Backing up user passwords only"
-        ],
-        correct: 1,
-        explanation: "<strong>Full Backup</strong> copies <em>everything</em>. It's the slowest but most complete. Like photocopying an entire book instead of just the changed pages."
+        category: "Service Mesh",
+        type: "open",
+        question: "Scenario: You're experiencing intermittent failures in service-to-service communication with unclear root cause. How would you use a service mesh to improve observability?",
+        answer: "1. Deploy Istio/Linkerd with automatic metrics collection<br>2. View service dependency graph (Kiali for Istio)<br>3. Analyze request success rates, latencies, and error codes per service<br>4. Use distributed tracing (Jaeger/Zipkin) to follow requests across services<br>5. Check proxy access logs for detailed request/response info<br>6. Set up alerts based on golden signals (traffic, errors, latency, saturation)",
+        explanation: "Service meshes automatically collect detailed telemetry. They provide visibility into service dependencies, performance metrics, and distributed tracing without code changes."
     },
     {
         id: 76,
-        category: "Backup & Recovery",
-        question: "What is a Differential Backup?",
-        options: [
-            "Backing up data that changed since the LAST full backup",
-            "Backing up differences between two databases",
-            "Backing up only text columns",
-            "A backup that checks for errors"
-        ],
-        correct: 0,
-        explanation: "<strong>Differential Backup</strong> captures only data that changed since the <em>last full backup</em>. Faster than full backup, but grows larger each day until the next full backup."
+        category: "Service Mesh",
+        type: "open",
+        question: "Scenario: A service in your mesh needs to communicate with an external third-party API. How do you configure this securely in Istio?",
+        answer: "1. Create a ServiceEntry to register the external service in the mesh<br>2. Configure egress gateway to control and monitor outbound traffic<br>3. Set up DestinationRule for TLS origination if needed<br>4. Apply authorization policies to restrict which services can access the external API<br>5. Monitor external calls through mesh metrics<br>6. Consider caching responses to reduce external dependencies",
+        explanation: "Service meshes control both internal and external traffic. ServiceEntries bring external services into the mesh for consistent policy application and observability."
     },
     {
         id: 77,
-        category: "Backup & Recovery",
-        question: "What is Transaction Log Backup?",
-        options: [
-            "Backing up the error log file",
-            "Backing up all transactions since the last log backup for point-in-time recovery",
-            "Backing up login attempts",
-            "Backing up table names only"
-        ],
-        correct: 1,
-        explanation: "<strong>Log Backup</strong> captures every transaction since the last backup. Combined with full backups, it enables <strong>point-in-time recovery</strong> - restore to any second, not just backup times."
+        category: "Service Discovery",
+        type: "open",
+        question: "Scenario: Your services use different programming languages and frameworks. You want consistent retry logic across all services. How can you achieve this?",
+        answer: "1. Implement a service mesh (Istio/Linkerd)<br>2. Configure retry policies in VirtualService resources<br>3. Set retry attempts, timeout per try, and retry conditions (5xx, gateway-errors)<br>4. Add circuit breaker settings in DestinationRule<br>5. The sidecar proxy handles retries uniformly regardless of application language<br>6. Remove retry logic from application code to avoid conflicts",
+        explanation: "Service mesh provides language-agnostic reliability patterns. Centralized configuration ensures consistent behavior across polyglot microservices."
     },
     {
         id: 78,
-        category: "Backup & Recovery",
-        question: "What is Point-in-Time Recovery (PITR)?",
-        options: [
-            "Recovering data from a specific moment in time",
-            "Recovering only the current time's data",
-            "Scheduling backups at specific times",
-            "Backing up every hour"
-        ],
-        correct: 0,
-        explanation: "<strong>PITR</strong> lets you restore to <em>any exact moment</em> (like '2:34 PM yesterday'). Essential for recovering from mistakes - like if someone accidentally deleted data at 3 PM but you don't discover it until 5 PM."
+        category: "Service Mesh",
+        type: "open",
+        question: "Scenario: You need to implement rate limiting per user across all microservices. The services use different tech stacks. What's your solution?",
+        answer: "1. Deploy a service mesh with global rate limiting<br>2. Configure local rate limits per service instance<br>3. Use Redis or similar for global rate limit counters<br>4. Implement Envoy rate limit service with descriptors (user ID, path, method)<br>5. Apply RateLimit resources in Istio<br>6. Alternatively, use API Gateway (Kong, Ambassador) with rate limiting plugins",
+        explanation: "Service meshes support both local and global rate limiting. For user-specific limits across services, global rate limiting with a shared store is required."
     },
+
+    // ==================== AUTHENTICATION & AUTHORIZATION (79-84) ====================
     {
         id: 79,
-        category: "Backup & Recovery",
-        question: "In Master-Slave Replication, what can the Slave do?",
-        options: [
-            "Handle both reads and writes",
-            "Handle read queries only (replicates from Master)",
-            "Delete data from the Master",
-            "Create new tables independently"
-        ],
-        correct: 1,
-        explanation: "<strong>Master-Slave Replication</strong>: Master handles all writes, Slaves copy changes and handle <em>read queries</em>. Spreads read load. If Master dies, you can promote a Slave."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: You have 20 microservices and want users to authenticate once and access all services. Describe your SSO architecture.",
+        answer: "1. Implement an Identity Provider (IdP) - Auth0, Keycloak, or AWS Cognito<br>2. Use OAuth 2.0 + OpenID Connect (OIDC) for authentication<br>3. Client obtains JWT access token from IdP<br>4. Services validate JWT signature using JWKS endpoint<br>5. Pass JWT in Authorization header between services<br>6. Implement token refresh mechanism<br>7. Use short-lived access tokens (15 min) with refresh tokens",
+        explanation: "OAuth 2.0 + OIDC is the industry standard for SSO. JWTs allow stateless validation without calling the IdP for each request, improving performance and availability."
     },
     {
         id: 80,
-        category: "Backup & Recovery",
-        question: "What is Master-Master Replication?",
-        options: [
-            "Two databases where both can accept writes",
-            "One master controlling two slaves",
-            "A master database with double backup",
-            "Replication that only works on weekends"
-        ],
-        correct: 0,
-        explanation: "<strong>Master-Master</strong> lets <em>both servers accept writes</em>. Changes sync between them. Good for high availability but complex - conflicts can occur if both edit the same row."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: Your microservices need fine-grained authorization (e.g., 'can user X edit resource Y'). Design your authorization system.",
+        answer: "1. Implement RBAC (Role-Based Access Control) for coarse permissions<br>2. Add ABAC (Attribute-Based Access Control) for fine-grained decisions<br>3. Use Policy Decision Point (PDP) like OPA (Open Policy Agent)<br>4. Deploy OPA as sidecar or centralized service<br>5. Define policies in Rego language<br>6. Cache authorization decisions to reduce latency<br>7. Log all authorization decisions for audit",
+        explanation: "OPA provides decoupled, fine-grained authorization. Policies can be written as code, versioned, and evaluated consistently across services without embedding logic in each service."
     },
     {
         id: 81,
-        category: "Backup & Recovery",
-        question: "What is WAL (Write-Ahead Logging)?",
-        options: [
-            "Logging that happens after writing to disk",
-            "Writing changes to a log BEFORE updating actual data files",
-            "A type of backup storage",
-            "Logging out database users"
-        ],
-        correct: 1,
-        explanation: "<strong>WAL</strong> writes changes to a <em>log file first</em>, then to the actual database. If the system crashes mid-write, the log can replay and complete the operation. Like writing in a draft before finalizing."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: Service A needs to call Service B on behalf of a user. How do you securely pass the user's identity?",
+        answer: "1. User authenticates and receives JWT access token<br>2. Service A includes JWT in request to Service B<br>3. Service B validates JWT (signature, expiration, issuer)<br>4. For service-to-service without user context, use client credentials flow<br>5. Consider token exchange (JWT exchange) for delegation chains<br>6. Include only necessary claims; avoid sensitive data in JWT<br>7. Use mTLS between services as additional security layer",
+        explanation: "Passing the user's JWT maintains user context through the call chain. Client credentials flow is for service authentication without user context. Token exchange enables delegation scenarios."
     },
     {
         id: 82,
-        category: "Cloud Databases",
-        question: "What is the main difference between Amazon RDS and Aurora?",
-        options: [
-            "RDS is free, Aurora is paid",
-            "Aurora is AWS-optimized, up to 5x faster than standard MySQL/PostgreSQL on RDS",
-            "RDS only supports MySQL",
-            "Aurora cannot be used with AWS"
-        ],
-        correct: 1,
-        explanation: "<strong>Amazon Aurora</strong> is AWS's <em>custom-built</em> database engine, compatible with MySQL/PostgreSQL but much faster. <strong>RDS</strong> hosts standard database engines on managed instances."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: You need to revoke a user's access immediately across all microservices. How do you handle this with JWTs?",
+        answer: "1. Keep JWT expiration short (5-15 minutes)<br>2. Maintain a token blocklist (Redis) for revoked tokens<br>3. Check blocklist on each request (trade-off: adds latency)<br>4. Use refresh tokens that can be revoked at IdP<br>5. For immediate revocation: revoke refresh token + add access token to blocklist<br>6. Consider using reference tokens (opaque) instead of self-contained JWTs<br>7. Implement session management service for critical applications",
+        explanation: "JWTs are stateless and can't be revoked instantly. Short expiration, blocklists, or reference tokens (stored in DB) are solutions. Reference tokens sacrifice statelessness for instant revocation."
     },
     {
         id: 83,
-        category: "Cloud Databases",
-        question: "What type of database is DynamoDB?",
-        options: [
-            "Relational database",
-            "Fully managed NoSQL key-value and document database",
-            "Graph database only",
-            "In-memory cache only"
-        ],
-        correct: 1,
-        explanation: "<strong>DynamoDB</strong> is AWS's <em>serverless NoSQL</em> database. Scales automatically, super fast (single-digit millisecond latency), and you only pay for what you use."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: You want to implement API key authentication for machine-to-machine communication. Design a secure API key system.",
+        answer: "1. Generate cryptographically secure random API keys (256-bit minimum)<br>2. Store only hashed keys (SHA-256) in database, not plaintext<br>3. Display full key only once at creation to user<br>4. Implement key prefixes for identification (e.g., 'live_123abc')<br>5. Support multiple keys per client for rotation<br>6. Implement key expiration and automatic rotation<br>7. Scope keys to specific resources/operations<br>8. Rate limit per API key, not just IP",
+        explanation: "API keys should be treated like passwords - hashed storage, secure generation, and rotation support. Scoping and rate limiting per key limit blast radius if a key is compromised."
     },
     {
         id: 84,
-        category: "Cloud Databases",
-        question: "What is Google BigQuery used for?",
-        options: [
-            "Running small transactional queries",
-            "Analyzing massive datasets (data warehouse) with SQL",
-            "Storing user session data",
-            "Real-time chat applications"
-        ],
-        correct: 1,
-        explanation: "<strong>BigQuery</strong> is Google's <em>data warehouse</em> for analyzing petabytes of data. Not for fast OLTP (transactions), but amazing for OLAP (analytics) - running reports on huge datasets."
+        category: "Auth Patterns",
+        type: "open",
+        question: "Scenario: You need to support social login (Google, GitHub) alongside email/password. Design your authentication flow.",
+        answer: "1. Implement OAuth 2.0/OIDC flow with social providers<br>2. User clicks 'Login with Google' → redirect to Google<br>3. Google returns authorization code<br>4. Backend exchanges code for ID token and access token<br>5. Verify ID token signature and claims<br>6. Create/link local user account based on provider's user ID<br>7. Issue your own JWT for internal service communication<br>8. Support account linking (connect multiple providers to one account)",
+        explanation: "Social login delegates authentication to trusted providers. Your system receives verified identity claims and maintains a consistent internal identity across different login methods."
     },
+
+    // ==================== EVENT-DRIVEN ARCHITECTURE (85-88) ====================
     {
         id: 85,
-        category: "Cloud Databases",
-        question: "What is a Serverless Database?",
-        options: [
-            "A database without any servers",
-            "Database that automatically scales and you pay per use (no server management)",
-            "A database that only runs on weekends",
-            "A database with no security"
-        ],
-        correct: 1,
-        explanation: "<strong>Serverless databases</strong> (like DynamoDB, Aurora Serverless) <em>scale automatically</em> based on demand. You don't provision servers or worry about capacity - just pay for actual usage."
+        category: "Event-Driven",
+        type: "open",
+        question: "Scenario: You need to redesign a monolithic order processing system to be event-driven. Describe your architecture.",
+        answer: "1. Identify domain events: OrderCreated, PaymentProcessed, InventoryReserved, OrderShipped<br>2. Deploy event broker (Kafka, RabbitMQ, or AWS EventBridge)<br>3. Order service publishes OrderCreated event<br>4. Payment service subscribes and processes payment<br>5. PaymentProcessed triggers Inventory service<br>6. Use Saga pattern for distributed transaction management<br>7. Implement event schema registry (Confluent Schema Registry)<br>8. Add idempotency checks to handle duplicate events",
+        explanation: "Event-driven architecture decouples services through asynchronous events. Each service reacts to events independently. Saga pattern ensures consistency across the distributed flow."
     },
     {
         id: 86,
-        category: "Cloud Databases",
-        question: "What is Multi-Region Database Deployment?",
-        options: [
-            "Deploying to multiple data centers in the same city",
-            "Replicating data across different geographic regions for low latency and disaster recovery",
-            "Running multiple database versions",
-            "Deploying databases on multiple cloud providers"
-        ],
-        correct: 1,
-        explanation: "<strong>Multi-Region</strong> puts copies of your database in <em>different parts of the world</em>. Users in Asia query the Asia copy for speed. If one region fails, others keep running."
+        category: "Event-Driven",
+        type: "open",
+        question: "Scenario: Your event-driven system experiences events being processed out of order, causing data inconsistency. How do you handle this?",
+        answer: "1. Include timestamp and sequence number in events<br>2. Implement event sourcing to rebuild state from event log<br>3. Use Kafka partitions with ordering key (e.g., order_id)<br>4. Implement optimistic concurrency control with version numbers<br>5. Detect out-of-order events and queue until missing events arrive<br>6. Design for idempotency so out-of-order processing is safe<br>7. Consider CQRS: separate read models built from ordered event stream",
+        explanation: "Ordering guarantees in distributed systems are challenging. Partition keys ensure related events are ordered. Idempotency and event sourcing make out-of-order handling safer."
     },
     {
         id: 87,
-        category: "Cloud Databases",
-        question: "Which AWS database service is best for real-time applications requiring microsecond latency?",
-        options: [
-            "RDS",
-            "ElastiCache (Redis/Memcached)",
-            "DynamoDB",
-            "Redshift"
-        ],
-        correct: 1,
-        explanation: "<strong>ElastiCache</strong> (managed Redis/Memcached) provides <em>microsecond</em> latency by keeping data in memory. Perfect for caching, session stores, and real-time leaderboards."
+        category: "Event-Driven",
+        type: "open",
+        question: "Scenario: You need to ensure exactly-once processing for financial transactions in an event-driven system. How do you achieve this?",
+        answer: "1. Use idempotent consumers (same event produces same result)<br>2. Implement deduplication using event ID in database<br>3. Use transactional outbox pattern for event publishing<br>4. Configure Kafka transactions (producer idempotency + transactions)<br>5. Store consumer offsets and processing results atomically<br>6. Use database unique constraints on processed event IDs<br>7. Design compensating transactions for rollback scenarios",
+        explanation: "Exactly-once requires idempotency at the consumer level. Transactional outbox ensures events aren't lost. Database-level deduplication prevents double processing."
     },
     {
         id: 88,
-        category: "Data Warehousing",
-        question: "What is the main difference between OLAP and OLTP?",
-        options: [
-            "OLAP is for transactions, OLTP is for analytics",
-            "OLTP handles daily transactions, OLAP handles analytical queries on large data",
-            "OLAP is faster than OLTP",
-            "OLTP is only for NoSQL"
-        ],
-        correct: 1,
-        explanation: "<strong>OLTP</strong> (Online Transaction Processing): Fast inserts/updates for daily operations (shopping cart). <strong>OLAP</strong> (Online Analytical Processing): Complex queries on huge datasets (sales reports)."
+        category: "Event-Driven",
+        type: "open",
+        question: "Scenario: You need to add a new service to an existing event-driven system without disrupting current producers. How do you evolve the event schema?",
+        answer: "1. Follow schema evolution best practices (backward/forward compatibility)<br>2. Use Confluent Schema Registry with Avro/Protobuf/JSON Schema<br>3. Add new fields as optional with default values<br>4. Never rename or delete existing fields<br>5. Use schema versioning<br>6. Deploy new consumer first, then update producers<br>7. Implement consumer logic to handle both old and new schema<br>8. Monitor for deserialization errors",
+        explanation: "Schema evolution enables safe changes to events. Optional fields with defaults maintain compatibility. Schema registry enforces compatibility rules and prevents breaking changes."
     },
+
+    // ==================== WEBSOCKET & REAL-TIME SYSTEMS (89-92) ====================
     {
         id: 89,
-        category: "Data Warehousing",
-        question: "What is a Star Schema?",
-        options: [
-            "A database shaped like a star",
-            "One central fact table surrounded by dimension tables",
-            "A schema with only 5 tables",
-            "A backup strategy"
-        ],
-        correct: 1,
-        explanation: "<strong>Star Schema</strong> has a <em>central fact table</em> (sales, orders) with foreign keys to surrounding <em>dimension tables</em> (customers, products, dates). Looks like a star diagram."
+        category: "Real-Time",
+        type: "open",
+        question: "Scenario: You need to build a real-time chat application supporting 100,000 concurrent connections. Design your architecture.",
+        answer: "1. Use WebSocket servers (Socket.io, WS library) behind load balancer<br>2. Deploy multiple WebSocket server instances (horizontal scaling)<br>3. Use Redis Pub/Sub or NATS for message broadcasting across instances<br>4. Implement sticky sessions or shared connection state<br>5. Use CDN for static assets<br>6. Implement heartbeat/ping to detect disconnections<br>7. Add reconnection logic with exponential backoff on client<br>8. Monitor connection count, message throughput, and latency",
+        explanation: "WebSocket servers are stateful; load balancing requires session affinity or shared state. Redis Pub/Sub enables broadcasting messages to users connected to different server instances."
     },
     {
         id: 90,
-        category: "Data Warehousing",
-        question: "What is a Snowflake Schema?",
-        options: [
-            "A schema that only works in winter",
-            "Star schema with normalized dimension tables (dimensions have sub-dimensions)",
-            "A database schema for storing images",
-            "A backup of the star schema"
-        ],
-        correct: 1,
-        explanation: "<strong>Snowflake Schema</strong> is like a Star Schema but <em>dimensions are further normalized</em>. A 'Product' dimension might link to 'Category' and 'Brand' tables, creating a snowflake pattern."
+        category: "Real-Time",
+        type: "open",
+        question: "Scenario: Your WebSocket servers need to push updates to specific users when data changes in your database. Design the data flow.",
+        answer: "1. Implement Change Data Capture (CDC) on database (Debezium)<br>2. Database changes are published to Kafka<br>3. WebSocket service subscribes to Kafka topics<br>4. Service maintains user_id → connection_id mapping in Redis<br>5. On relevant change, lookup target connections<br>6. Push update to specific WebSocket connections<br>7. Alternative: Use database triggers + message queue for simpler cases<br>8. Implement fan-out for users with multiple connections",
+        explanation: "CDC captures database changes as events. The WebSocket service routes events to appropriate connections based on user subscriptions. Redis maintains the user-to-connection mapping."
     },
     {
         id: 91,
-        category: "Data Warehousing",
-        question: "What is the difference between ETL and ELT?",
-        options: [
-            "ETL is faster than ELT",
-            "ETL transforms before loading, ELT loads raw data then transforms in the warehouse",
-            "ELT is only for small data",
-            "They are the same thing"
-        ],
-        correct: 1,
-        explanation: "<strong>ETL</strong>: Extract → Transform → Load (transform on a separate server). <strong>ELT</strong>: Extract → Load → Transform (load raw data, then use warehouse power to transform). Cloud warehouses prefer ELT."
+        category: "Real-Time",
+        type: "open",
+        question: "Scenario: You need to support both WebSocket and fallback for environments where WebSockets are blocked. What options do you have?",
+        answer: "1. Use Socket.io which auto-falls back: WebSocket → SSE → Long Polling<br>2. Implement Server-Sent Events (SSE) for server-to-client only<br>3. Long polling as last resort (HTTP request held open)<br>4. Detect transport capability at connection time<br>5. For mobile apps, implement custom reconnection logic<br>6. Consider using a managed service like Pusher or Ably<br>7. Document supported browsers and network requirements",
+        explanation: "WebSocket fallbacks ensure connectivity in restricted environments. Socket.io handles fallback automatically. SSE works for unidirectional updates; long polling works everywhere but is less efficient."
     },
     {
         id: 92,
-        category: "Data Warehousing",
-        question: "Why do Data Warehouses use Columnar Storage?",
-        options: [
-            "It looks better in diagrams",
-            "Analytical queries read specific columns faster (don't need to load entire rows)",
-            "It's required by law",
-            "Columnar storage is cheaper"
-        ],
-        correct: 1,
-        explanation: "<strong>Columnar Storage</strong> stores data by <em>columns</em> instead of rows. When analyzing 'sum of sales', it only reads the sales column, not every column of every row. Much faster for analytics!"
+        category: "Real-Time",
+        type: "open",
+        question: "Scenario: You need to scale WebSocket horizontally while maintaining user session state. How do you handle this?",
+        answer: "1. Store session state in external cache (Redis) instead of memory<br>2. Use sticky sessions (IP hash or cookie) to route user to same server<br>3. Implement shared connection registry (Redis)<br>4. When server needs to send message, lookup which server hosts the connection<br>5. Use message broker for cross-server communication<br>6. Implement graceful shutdown: migrate connections or wait for natural disconnect<br>7. Consider serverless WebSocket solutions (API Gateway, Cloudflare Durable Objects)",
+        explanation: "Horizontal scaling of stateful WebSocket servers requires externalizing state or connection routing. Shared registries enable finding which server hosts a specific connection."
     },
+
+    // ==================== IDEMPOTENCY & EXACTLY-ONCE (93-94) ====================
     {
         id: 93,
-        category: "MongoDB",
-        question: "What is the MongoDB Aggregation Pipeline?",
-        options: [
-            "A physical pipeline for data",
-            "A framework for processing data through stages (filter, group, sort) like an assembly line",
-            "A backup process",
-            "A way to import data"
-        ],
-        correct: 1,
-        explanation: "<strong>Aggregation Pipeline</strong> processes data through <em>stages</em> in sequence: $match (filter) → $group (aggregate) → $sort. Like an assembly line where each stage transforms the data."
+        category: "Idempotency",
+        type: "open",
+        question: "Scenario: Your payment API is being retried by clients due to network timeouts, causing duplicate charges. How do you make it idempotent?",
+        answer: "1. Require clients to send idempotency key (UUID) in header<br>2. Store idempotency key + request fingerprint on first attempt<br>3. Return cached response for duplicate keys within timeout window (24h)<br>4. Use database unique constraint on idempotency key<br>5. Process payment and store result atomically (transaction)<br>6. Clear idempotency keys after appropriate retention period<br>7. Document idempotency guarantee in API contract",
+        explanation: "Idempotency keys allow safe retries. The server recognizes duplicate requests and returns the original response without reprocessing. Atomic storage prevents race conditions."
     },
     {
         id: 94,
-        category: "MongoDB",
-        question: "What is MongoDB Sharding?",
-        options: [
-            "Breaking data into pieces using a shard key to distribute across servers",
-            "Encrypting MongoDB data",
-            "Creating backup shards",
-            "A type of MongoDB index"
-        ],
-        correct: 0,
-        explanation: "<strong>Sharding</strong> splits MongoDB data across <em>multiple servers</em> using a <strong>shard key</strong> (like user_id). Each shard holds a portion, allowing horizontal scaling beyond one server's capacity."
+        category: "Idempotency",
+        type: "open",
+        question: "Scenario: You're processing messages from a queue and need exactly-once semantics. The processing involves database writes and external API calls. Design your solution.",
+        answer: "1. Make the operation idempotent (same message → same result)<br>2. Store processed message IDs in database with unique constraint<br>3. Check message ID before processing<br>4. Use database transaction: insert message ID + perform business logic<br>5. For external APIs, use their idempotency keys if available<br>6. Acknowledge message only after successful processing<br>7. Implement dead letter queue for permanently failing messages<br>8. Consider using Kafka transactions for atomic produce-consume",
+        explanation: "Exactly-once processing requires idempotent operations and tracking processed messages. Transactions ensure atomicity between message tracking and business logic."
     },
+
+    // ==================== BACKPRESSURE & THROTTLING (95-97) ====================
     {
         id: 95,
-        category: "MongoDB",
-        question: "What is a MongoDB Replica Set?",
-        options: [
-            "A set of duplicate documents",
-            "A group of MongoDB servers maintaining the same data for redundancy and failover",
-            "A backup file format",
-            "A type of query"
-        ],
-        correct: 1,
-        explanation: "<strong>Replica Set</strong> is <em>3+ MongoDB servers</em> that keep copies of the same data. One Primary handles writes, others replicate. If Primary dies, a Secondary automatically becomes Primary."
+        category: "Backpressure",
+        type: "open",
+        question: "Scenario: Your API is being overwhelmed by client requests, causing cascading failures. Implement backpressure mechanisms.",
+        answer: "1. Implement rate limiting (token bucket/leaky bucket) per client<br>2. Return 429 Too Many Requests when limit exceeded<br>3. Use connection pooling with max connections limit<br>4. Implement queue-based load leveling (message queue)<br>5. Add circuit breaker for downstream services<br>6. Use adaptive concurrency limits (CoDel, Vegas algorithm)<br>7. Implement graceful degradation (serve cached/stale data)<br>8. Add Retry-After header for rate limit responses",
+        explanation: "Backpressure prevents overload by slowing down or rejecting requests. Multiple mechanisms work together: rate limiting, queueing, circuit breakers, and graceful degradation."
     },
     {
         id: 96,
-        category: "MongoDB",
-        question: "What is a Compound Index in MongoDB?",
-        options: [
-            "An index on a single field",
-            "An index on multiple fields (like {lastName: 1, firstName: 1})",
-            "A combination of text and number indexes",
-            "An index that expires"
-        ],
-        correct: 1,
-        explanation: "<strong>Compound Index</strong> indexes <em>multiple fields together</em>. Like a phone book sorted by last name, then first name. Queries must use fields from left to right to benefit."
+        category: "Backpressure",
+        type: "open",
+        question: "Scenario: A Kafka consumer is processing messages slower than they are being produced. How do you handle this backpressure?",
+        answer: "1. Scale consumers by adding more instances to consumer group<br>2. Increase partition count to allow more parallelism<br>3. Optimize consumer processing logic (batch processing, async)<br>4. Implement pause/resume based on processing lag<br>5. Increase max.poll.records if processing is fast per record<br>6. Use separate queue for slow operations (decouple processing)<br>7. Monitor consumer lag and alert when growing<br>8. Consider increasing retention time to prevent data loss",
+        explanation: "Kafka backpressure is handled by scaling consumers and optimizing processing. Consumer lag metrics indicate when processing can't keep up with production."
     },
     {
         id: 97,
-        category: "MongoDB",
-        question: "What is the Schema Design Pattern 'Embedding' in MongoDB?",
-        options: [
-            "Putting documents inside other documents (denormalization)",
-            "Creating database schemas",
-            "Encrypting documents",
-            "Linking documents with foreign keys"
-        ],
-        correct: 0,
-        explanation: "<strong>Embedding</strong> stores related data <em>inside the same document</em> (like putting all comments inside a blog post document). Fast reads but duplication. Good for 1:few relationships."
+        category: "Throttling",
+        type: "open",
+        question: "Scenario: You need to implement different rate limits for different user tiers (Free: 100/hr, Pro: 10,000/hr, Enterprise: unlimited). Design your throttling system.",
+        answer: "1. Use Redis with sliding window or token bucket implementation<br>2. Store rate limit config per user tier<br>3. Identify user and tier from JWT or API key<br>4. Check/Decrement counter atomically (Redis Lua script or Redlock)<br>5. Return X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset headers<br>6. Implement different limits per endpoint if needed<br>7. Use separate counters for burst vs sustained rates<br>8. Log rate limit violations for security monitoring",
+        explanation: "Tiered rate limiting uses different thresholds per user class. Redis provides the fast, atomic operations needed for distributed rate limiting. Headers inform clients of their current limits."
     },
+
+    // ==================== OBSERVABILITY (98-100) ====================
     {
         id: 98,
-        category: "PostgreSQL",
-        question: "What is JSONB in PostgreSQL?",
-        options: [
-            "Just a string storing JSON text",
-            "Binary JSON storage that is parsed, indexable, and queryable",
-            "A backup format for JSON",
-            "JavaScript for PostgreSQL"
-        ],
-        correct: 1,
-        explanation: "<strong>JSONB</strong> stores JSON in a <em>binary, parsed format</em>. You can index it, query inside it (<code>data->>'name'</code>), and it's faster than storing JSON as text."
+        category: "Observability",
+        type: "open",
+        question: "Scenario: You need to implement observability for a microservices architecture. Design your logging, metrics, and tracing strategy.",
+        answer: "1. Logging: Structured JSON logs with correlation IDs; aggregate with ELK/Loki<br>2. Metrics: Use Prometheus for collection, Grafana for visualization; track RED (Rate, Errors, Duration)<br>3. Tracing: Implement distributed tracing with OpenTelemetry/Jaeger; propagate trace context<br>4. Centralize logs from all services in single searchable platform<br>5. Define SLIs/SLOs and create alerts based on error budgets<br>6. Use service mesh for automatic metrics and tracing injection<br>7. Create dashboards showing service dependencies and health<br>8. Implement log sampling for high-volume services",
+        explanation: "Observability requires three pillars: logs (events), metrics (aggregated data), and traces (request flow). Together they provide visibility into distributed system behavior."
     },
     {
         id: 99,
-        category: "PostgreSQL",
-        question: "How does PostgreSQL handle Array types?",
-        options: [
-            "PostgreSQL does not support arrays",
-            "PostgreSQL supports arrays as a native column type with array operators and indexes",
-            "Arrays must be stored as comma-separated strings",
-            "Arrays are only for numbers"
-        ],
-        correct: 1,
-        explanation: "<strong>PostgreSQL Arrays</strong> are <em>first-class citizens</em>. You can have <code>INTEGER[]</code> columns, query with <code>ANY</code>, use <code>unnest()</code> to expand them, and even create GiST indexes on arrays."
+        category: "Observability",
+        type: "open",
+        question: "Scenario: Users report intermittent slow requests, but your average latency metrics look fine. How do you investigate?",
+        answer: "1. Look at latency percentiles (p95, p99) not just averages<br>2. Use distributed tracing to identify slow path segments<br>3. Correlate slow requests with specific services or databases<br>4. Check for GC pauses or resource contention<br>5. Analyze logs for timeout or retry patterns<br>6. Use heatmaps to visualize latency distribution<br>7. Implement user-specific tracing for affected users<br>8. Look for patterns: specific times, specific users, specific operations",
+        explanation: "Averages hide tail latency. Percentiles show worst-case experience. Distributed tracing identifies which component causes slowness in specific requests."
     },
     {
         id: 100,
-        category: "PostgreSQL",
-        question: "What is PostgreSQL Full-Text Search?",
-        options: [
-            "Searching only in text files",
-            "Built-in text search with stemming, ranking, and relevance scoring",
-            "A third-party plugin only",
-            "Searching only full words, not partial matches"
-        ],
-        correct: 1,
-        explanation: "<strong>PostgreSQL Full-Text Search</strong> is <em>built-in</em>! It handles stemming (run/runs/running), stop words, ranking results by relevance, and special indexes (GIN) for speed. No Elasticsearch needed for many use cases!"
-    },
-    // 50 Scenario-Based Questions for Senior Fullstack Developers
-    {
-        id: 101,
-        category: "System Design",
+        category: "Observability",
         type: "open",
-        question: "Scenario: You're designing a database for a ride-sharing app like Uber. The system needs to handle 1 million daily rides, real-time driver location updates, and complex pricing calculations. Users frequently search for nearby drivers. How would you design the schema and what database(s) would you choose?",
-        answer: "1. Use PostgreSQL for transactional data (rides, users, payments) with proper indexing on location columns using PostGIS extension. 2. Use Redis for real-time driver locations with geospatial queries and TTL on location updates. 3. Use a separate read replica for heavy analytics queries. 4. Partition ride history table by date for performance. 5. Consider using a separate OLAP database (like ClickHouse) for pricing analytics and ML model training.",
-        explanation: "This is a polyglot persistence scenario. PostgreSQL provides ACID guarantees for financial transactions. Redis handles high-write real-time location data efficiently. Separating read and write workloads prevents analytical queries from impacting user experience. Partitioning manages data growth over time."
-    },
-    {
-        id: 102,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your MySQL database table reached 10 million rows and simple SELECT queries started taking 5+ seconds. The table has a primary key and a few foreign keys. Users report the app feels slow. What's your systematic approach to diagnose and fix this?",
-        answer: "1. Run EXPLAIN on slow queries to identify missing indexes or full table scans. 2. Check if the query uses proper WHERE clause filtering. 3. Add composite indexes for frequently queried column combinations. 4. Consider query rewriting to avoid SELECT *. 5. Implement pagination for large result sets. 6. If queries are still slow, consider horizontal partitioning (sharding) by user_id or date. 7. Enable query cache if read-heavy. 8. Monitor slow query log continuously.",
-        explanation: "Most performance issues stem from missing indexes or inefficient queries. EXPLAIN is your best friend. Adding indexes is usually the first fix, but be careful - too many indexes slow down writes. Sometimes the query logic itself needs optimization (e.g., avoiding N+1 queries)."
-    },
-    {
-        id: 103,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to migrate a 1TB PostgreSQL table to a new schema without downtime. The table is actively written to 24/7 by multiple services. The migration requires adding a new NOT NULL column with calculated values from existing data. How do you approach this?",
-        answer: "1. Add the new column as NULL first (no table rewrite needed). 2. Create a background job to populate the column in batches to avoid locking. 3. Use a trigger to keep new column updated for incoming writes during migration. 4. Once all rows are populated, add a CHECK constraint with NOT VALID to avoid full table scan. 5. Run VALIDATE CONSTRAINT in background. 6. Finally, alter column to NOT NULL. 7. Use pglogical or similar for zero-downtime cutover if needed.",
-        explanation: "PostgreSQL's ALTER TABLE acquires exclusive locks. Breaking the migration into steps prevents long locks. The NOT VALID + VALIDATE pattern allows adding constraints without locking. Triggers ensure consistency during the transition period."
-    },
-    {
-        id: 104,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: Your e-commerce database is hitting 90% CPU during Black Friday sales. You have 1 primary and 2 read replicas, but writes are becoming the bottleneck. The product catalog, user sessions, and order data are all in one PostgreSQL database. What strategies would you consider?",
-        answer: "1. Separate write-heavy and read-heavy data - move sessions to Redis. 2. Implement CQRS: use Elasticsearch for product search, keep PostgreSQL for transactions. 3. Use connection pooling (PgBouncer) to reduce connection overhead. 4. Implement write-behind caching for non-critical updates. 5. Consider sharding orders by region or time. 6. Use async processing (message queue) for non-real-time operations like sending emails. 7. Pre-compute and cache popular product listings.",
-        explanation: "When a monolithic database hits write limits, you need to split responsibilities. Redis for sessions offloads ephemeral data. CQRS separates read and write models. Sharding distributes write load. Async processing decouples critical and non-critical operations."
-    },
-    {
-        id: 105,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: At 3 AM, your database replica lag suddenly jumps from 1 second to 15 minutes. The primary database shows high CPU but normal query patterns. The replica is running on identical hardware. What diagnostic steps would you take?",
-        answer: "1. Check replica's pg_stat_replication for lag details. 2. Look for long-running queries on replica blocking replication. 3. Check if vacuum or analyze is running, blocking replication slot. 4. Monitor WAL generation rate on primary - sudden spike indicates bulk operation. 5. Check network between primary and replica. 6. Look for lock conflicts on replica. 7. Consider if large DDL was executed (like CREATE INDEX CONCURRENTLY). 8. Check disk I/O on replica - saturation causes lag.",
-        explanation: "Replication lag usually comes from: replica blocking (locks, vacuum), WAL spike (bulk load), network issues, or resource saturation. Long-running queries on replicas can block replication if they hold locks. DDL operations can generate massive WAL."
-    },
-    {
-        id: 106,
-        category: "Data Consistency",
-        type: "open",
-        question: "Scenario: You're building a bank transfer feature. Two users transfer money to each other simultaneously. How do you ensure no money is lost or created, even if the application crashes mid-transfer?",
-        answer: "1. Use database transactions with proper isolation level (SERIALIZABLE or READ COMMITTED with row locking). 2. Always acquire locks in consistent order (by account_id) to prevent deadlocks. 3. Use pessimistic locking (SELECT FOR UPDATE) on both accounts before modifying. 4. Implement idempotency keys to prevent duplicate transfers on retry. 5. Store transfer state and use two-phase commit pattern. 6. Maintain an audit log table for all balance changes. 7. Run reconciliation jobs to detect and fix inconsistencies.",
-        explanation: "Financial operations require ACID guarantees. Consistent lock ordering prevents deadlocks. Pessimistic locking ensures no other transaction interferes. Idempotency prevents double-spending on retries. Audit logs provide traceability and enable reconciliation."
-    },
-    {
-        id: 107,
-        category: "Architecture",
-        type: "open",
-        question: "Scenario: Your startup's single PostgreSQL database is becoming a bottleneck. You have 500k daily active users and expect 10x growth in 6 months. The app has social features (feeds, likes, comments) and user-generated content. Design a database strategy for this growth.",
-        answer: "1. Keep user profiles and auth in PostgreSQL (ACID needed). 2. Move social feeds to Cassandra or ScyllaDB (write-heavy, time-series). 3. Use S3 for media storage with CDN. 4. Implement Elasticsearch for content search. 5. Use Redis for counters (likes, views) with periodic flush to DB. 6. Partition data by user_id or region. 7. Implement event sourcing for social actions. 8. Use read replicas for analytics. 9. Plan for CQRS - separate read and write models.",
-        explanation: "Different data has different needs. Relational data (users) stays in PostgreSQL. Social feeds need high write throughput (Cassandra). Search needs Elasticsearch. Media goes to object storage. This polyglot approach scales each component appropriately."
-    },
-    {
-        id: 108,
-        category: "Optimization",
-        type: "open",
-        question: "Scenario: Your analytics dashboard queries take 30+ seconds to load, timing out frequently. The queries aggregate data from 6 months of user activity (50M rows). Users need near real-time data. How would you optimize this?",
-        answer: "1. Create materialized views for common aggregations, refresh periodically. 2. Use columnar storage (Amazon Redshift, ClickHouse) for analytics. 3. Implement pre-aggregated summary tables updated by triggers or batch jobs. 4. Use approximate queries (HLL, HyperLogLog) for large counts. 5. Partition data by date, query only recent partitions. 6. Implement result caching (Redis) with TTL. 7. Use stream processing (Kafka + Flink) for real-time aggregations. 8. Consider data warehousing ETL pipeline.",
-        explanation: "Real-time analytics on large datasets requires different strategies than OLTP. Materialized views trade freshness for speed. Columnar storage is 10-100x faster for aggregations. Pre-aggregation eliminates expensive calculations at query time. Approximate algorithms provide fast estimates with minimal error."
-    },
-    {
-        id: 109,
-        category: "Security",
-        type: "open",
-        question: "Scenario: A security audit revealed your application has SQL injection vulnerabilities in legacy code. The codebase has 200+ raw SQL queries. How do you systematically fix this while minimizing risk of breaking functionality?",
-        answer: "1. Immediately implement WAF rules to block common SQL injection patterns. 2. Use automated tools (sqlmap, Semgrep) to identify vulnerable queries. 3. Migrate to parameterized queries/prepared statements - never concatenate user input. 4. Implement input validation layer (whitelist approach). 5. Use ORM for new code, gradually refactor legacy. 6. Add database-level protections: least privilege principles, query timeouts. 7. Enable query logging and set up alerts for suspicious patterns. 8. Run penetration testing after fixes. 9. Document secure coding practices for the team.",
-        explanation: "SQL injection is preventable with parameterized queries. Defense in depth: WAF for immediate protection, code fixes for long-term, database permissions as last resort. Automated tools help identify vulnerabilities at scale. Gradual migration reduces regression risk."
-    },
-    {
-        id: 110,
-        category: "Backup & Recovery",
-        type: "open",
-        question: "Scenario: Your production database suffered corruption and the last 6 hours of WAL files are missing. The last full backup was from yesterday. You have transaction logs in the application layer. How do you recover with minimal data loss?",
-        answer: "1. Restore from last night's full backup to new instance. 2. Apply available WAL files to recover to last known good state. 3. Use application transaction logs to replay missing transactions. 4. For critical missing data, check if any read replicas have more recent data. 5. Consider point-in-time recovery from cloud provider snapshots if available. 6. Document data loss window and identify affected users. 7. Implement automated WAL archiving (S3) to prevent future loss. 8. Set up real-time replication to minimize RPO.",
-        explanation: "Recovery requires multiple strategies. WAL is primary but application logs can fill gaps. Replicas might have more recent data. The goal is minimizing RPO (Recovery Point Objective). After recovery, fix backup strategy to prevent recurrence - automated WAL archiving is essential."
-    },
-    {
-        id: 111,
-        category: "System Design",
-        type: "open",
-        question: "Scenario: You're designing a real-time chat system for 10 million concurrent users. Messages need to be delivered within 100ms, and users expect message history to load instantly. How would you architect the database layer?",
-        answer: "1. Use Redis Cluster for real-time message routing and presence tracking. 2. Store recent messages (last 7 days) in Cassandra for fast writes and time-series queries. 3. Archive older messages to S3 with Parquet format for cost-effective storage. 4. Implement message fan-out on write for popular channels, on read for DMs. 5. Use Elasticsearch for full-text search across message history. 6. Implement connection pooling with WebSocket gateway tier. 7. Use CQRS pattern to separate read/write workloads. 8. Geo-distribute Redis and Cassandra clusters for low latency.",
-        explanation: "Chat systems need extremely low latency. Redis handles real-time routing with pub/sub. Cassandra's LSM-tree structure excels at high-write workloads. Message fan-out strategy depends on channel size - popular channels pre-compute recipient lists, DMs query on read. Archiving old data keeps hot storage fast."
-    },
-    {
-        id: 112,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your API response time for a user dashboard increased from 200ms to 5 seconds. The query joins 8 tables to build the dashboard. You've already added indexes. What advanced techniques can you apply?",
-        answer: "1. Implement query result caching with Redis (cache-aside pattern). 2. Use materialized views for expensive aggregations, refresh asynchronously. 3. Decompose the monolithic query into smaller parallel queries (application-side join). 4. Implement data denormalization - store pre-computed dashboard data in a separate table. 5. Use read replicas to offload SELECT queries. 6. Implement GraphQL DataLoader pattern to batch and deduplicate queries. 7. Use database-specific optimizations like PostgreSQL's LATERAL joins. 8. Consider using a dedicated OLAP database for dashboard analytics.",
-        explanation: "Complex joins don't scale linearly. Caching eliminates repeated identical queries. Materialized views pre-compute expensive operations. Parallel queries can be faster than one complex query due to lock contention and query planner limitations. Denormalization trades write complexity for read speed."
-    },
-    {
-        id: 113,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to migrate from MySQL to PostgreSQL for a 500GB database with zero downtime. The app uses complex stored procedures that need rewriting. How do you plan this migration?",
-        answer: "1. Set up logical replication (pg_chameleon or Debezium) to sync MySQL to PostgreSQL in real-time. 2. Rewrite and test stored procedures incrementally in PostgreSQL. 3. Implement dual-write pattern: write to both databases during transition. 4. Use feature flags to gradually redirect read traffic to PostgreSQL. 5. Run shadow traffic - send production queries to PostgreSQL without affecting users. 6. Verify data consistency with checksums on both databases. 7. Plan rollback strategy with quick DNS cutover back to MySQL. 8. Monitor replication lag and consistency continuously.",
-        explanation: "Database migrations require a dual-running period. Logical replication keeps databases in sync. Dual-write ensures no data loss during transition. Feature flags allow gradual traffic shifting. Shadow testing validates PostgreSQL performance before cutover. Always have a rollback plan ready."
-    },
-    {
-        id: 114,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: Your PostgreSQL database has a single table that receives 50,000 writes per second - a logging/events table that's 2TB and growing. Queries are slowing down. How do you handle this scale?",
-        answer: "1. Implement time-based table partitioning (monthly or daily partitions). 2. Use declarative partitioning in PostgreSQL 12+ for automatic partition management. 3. Archive old partitions to cold storage (S3) and detach from main table. 4. Consider using TimescaleDB extension for time-series optimization. 5. Implement async batch inserts using COPY command or queue-based ingestion. 6. Use separate tablespaces for recent vs. old partitions. 7. Set up partition-wise joins for queries spanning multiple time periods. 8. Consider specialized time-series database (InfluxDB, ClickHouse) for pure event storage.",
-        explanation: "Time-series data at scale requires partitioning. PostgreSQL's native partitioning allows efficient partition pruning - queries only scan relevant partitions. Archiving old data keeps the working set small. TimescaleDB provides automatic chunking and compression. For extreme scale, specialized time-series databases outperform general-purpose SQL."
-    },
-    {
-        id: 115,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: Your application suddenly shows 'too many connections' errors. The database max_connections is set to 500, but you're seeing intermittent failures. The connection pool is configured for 100 connections. What could be wrong and how do you diagnose it?",
-        answer: "1. Check pg_stat_activity for idle connections not being released properly. 2. Look for connection leaks - unclosed connections in application code. 3. Verify connection pool configuration - ensure max connections < database limit. 4. Check for long-running transactions holding connections. 5. Look for N+1 query patterns that exhaust pool during request spikes. 6. Implement connection pool monitoring (pgbouncer stats). 7. Check for connection storms during deployment or error scenarios. 8. Set appropriate connection timeouts and idle connection recycling.",
-        explanation: "Connection issues often stem from leaks or misconfiguration. Idle connections accumulate from exceptions without proper cleanup. Connection pool sizing must account for all application instances. Long transactions hold connections unnecessarily. Monitoring pg_stat_activity reveals connection patterns. PgBouncer helps manage connection multiplexing."
-    },
-    {
-        id: 116,
-        category: "Data Consistency",
-        type: "open",
-        question: "Scenario: You're building a distributed e-commerce system. A user places an order and payment succeeds, but inventory reservation fails due to network partition. How do you ensure data consistency across services?",
-        answer: "1. Implement Saga pattern with compensating transactions. 2. Use outbox pattern: write events to database table first, then publish via CDC. 3. Implement idempotency keys for all operations to prevent duplicates. 4. Use two-phase commit for critical financial transactions. 5. Design for eventual consistency with clear consistency boundaries. 6. Implement retry mechanisms with exponential backoff. 7. Use distributed tracing to track transaction flow. 8. Maintain audit log for all state changes with correlation IDs.",
-        explanation: "Distributed systems can't rely on ACID across services. Saga pattern sequences local transactions with compensating actions on failure. Outbox pattern ensures atomic 'database write + event publish'. Idempotency prevents double-charging or double-reserving. Accepting eventual consistency is necessary for distributed architectures."
-    },
-    {
-        id: 117,
-        category: "Architecture",
-        type: "open",
-        question: "Scenario: You need to design a multi-tenant SaaS application supporting 10,000 tenants with varying data sizes (100MB to 100GB per tenant). Data isolation and performance isolation are critical. What database architecture do you choose?",
-        answer: "1. Use schema-per-tenant approach for strong isolation with shared database cluster. 2. Implement row-level security (RLS) as additional safety layer. 3. Use connection pooling per schema to prevent cross-tenant resource contention. 4. Implement resource quotas and query timeouts per tenant. 5. Consider hybrid: small tenants share schemas, large tenants get dedicated schemas. 6. Use tenant-aware caching with namespace isolation. 7. Implement cross-tenant analytics via separate read-only replicas. 8. Automate tenant provisioning with schema templates.",
-        explanation: "Schema-per-tenant provides the best balance of isolation and operational simplicity. RLS adds defense-in-depth against application bugs. Resource quotas prevent noisy neighbor problems. Hybrid approaches optimize cost - shared infrastructure for small tenants, dedicated for enterprise. Automation is essential for managing thousands of schemas."
-    },
-    {
-        id: 118,
-        category: "Optimization",
-        type: "open",
-        question: "Scenario: Your reporting queries are scanning billions of rows and taking hours to complete. The same aggregations run repeatedly. Users need near real-time insights. What's your optimization strategy?",
-        answer: "1. Implement pre-aggregated summary tables updated by triggers or batch jobs. 2. Use columnar storage (Redshift, ClickHouse, BigQuery) for analytical workloads. 3. Create materialized views with incremental refresh strategies. 4. Implement result caching with Redis for frequently accessed reports. 5. Use approximate algorithms (HyperLogLog, Count-Min Sketch) for large cardinality counts. 6. Partition data and implement partition pruning for query optimization. 7. Use stream processing (Kafka + Flink) for real-time aggregations. 8. Move historical data to data warehouse, keep recent data in OLTP.",
-        explanation: "OLTP databases aren't designed for analytical workloads. Pre-aggregation eliminates repeated expensive calculations. Columnar storage is 10-100x faster for scans. Approximate algorithms trade tiny accuracy loss for massive speed gains. Stream processing enables real-time insights instead of batch. Separation of OLTP and OLAP is essential at scale."
-    },
-    {
-        id: 119,
-        category: "Trade-off Analysis",
-        type: "open",
-        question: "Scenario: You must choose between strong consistency and eventual consistency for a global user profile service. Users can update profiles from any region and expect immediate visibility. What factors influence your decision?",
-        answer: "1. Analyze consistency requirements: financial data needs strong consistency, profile pictures can be eventually consistent. 2. Consider user expectations: profile name changes should be immediate, avatar updates can have seconds delay. 3. Evaluate latency impact: strong consistency requires cross-region coordination (100-300ms). 4. Use CRDTs (Conflict-free Replicated Data Types) for mergeable data types. 5. Implement session consistency - users see their own writes immediately. 6. Use conflict resolution strategies: last-write-wins, vector clocks, or application-specific merge. 7. Consider hybrid: local cache for reads, synchronous write to nearest region, async replication. 8. Implement read-your-writes consistency as minimum guarantee.",
-        explanation: "Consistency is a spectrum, not binary. Different data elements have different consistency needs. CRDTs enable automatic conflict resolution for counters, sets, and certain text types. Session consistency maintains user trust while allowing replication lag. The choice depends on business requirements, not technical purity."
-    },
-    {
-        id: 120,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: Database CPU suddenly spikes to 100% during normal business hours. Slow query log shows many queries that normally run in 10ms now taking 10+ seconds. No deployments happened recently. What's your investigation approach?",
-        answer: "1. Check pg_stat_statements for query plan changes (plan regression). 2. Analyze table statistics - outdated stats cause bad query plans. 3. Check for lock contention - long-running transactions blocking others. 4. Look for missing indexes due to recent data growth. 5. Verify connection pool isn't exhausted causing request queuing. 6. Check for vacuum/autovacuum blocking queries. 7. Analyze if statistics sampling needs increase for large tables. 8. Look for implicit type conversions causing index scans to become sequential scans.",
-        explanation: "Sudden performance degradation without code changes usually indicates plan regression or resource contention. PostgreSQL's query planner relies on statistics - outdated stats lead to suboptimal plans. Locks and vacuum operations can block queries. Data volume growth can invalidate previously optimal plans. pg_stat_statements reveals plan changes over time."
-    },
-    {
-        id: 121,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to add a JSONB column to a 500M row table and create a GIN index on it. The ALTER TABLE statement would lock the table for hours. How do you do this online with minimal impact?",
-        answer: "1. Add column as NULL without default (instant operation in PostgreSQL 11+). 2. Populate column in batches using background jobs with small commits. 3. Use CREATE INDEX CONCURRENTLY to build GIN index without locking. 4. Once index is ready, add any constraints with NOT VALID flag. 5. Run VALIDATE CONSTRAINT to verify existing data in background. 6. For default values, use trigger to populate new rows during migration. 7. Consider using pg_repack or logical replication for complex migrations. 8. Monitor progress and replication lag throughout the process.",
-        explanation: "PostgreSQL's ALTER TABLE acquires exclusive locks. Adding nullable columns is instant, but defaults require table rewrite. CREATE INDEX CONCURRENTLY builds indexes without blocking reads/writes but takes longer. The NOT VALID + VALIDATE pattern allows constraint checking without long locks. Batching updates prevents transaction log bloat and replication lag."
-    },
-    {
-        id: 122,
-        category: "System Design",
-        type: "open",
-        question: "Scenario: You're designing a recommendation engine that needs to serve personalized content to 100M users within 50ms. User behavior data is massive (TBs). How do you architect this?",
-        answer: "1. Use Redis Cluster for user preference caching with TTL-based eviction. 2. Pre-compute recommendations in batch (Spark/Flink) and store in key-value store. 3. Use approximate nearest neighbor (ANN) libraries (Faiss, Annoy) for similarity search. 4. Implement multi-level caching: edge CDN, application cache, database cache. 5. Use feature stores (Feast, Tecton) for ML feature consistency. 6. Separate cold-start users (popular content) from active users (personalized). 7. Use Redis Streams for real-time behavior ingestion. 8. Implement A/B testing infrastructure for recommendation algorithms.",
-        explanation: "Real-time personalization at scale requires pre-computation. You can't run ML inference per request at 50ms SLA. ANN libraries enable sub-millisecond similarity search across billions of items. Feature stores separate ML feature computation from serving. Cold-start strategies handle new users gracefully. Multi-level caching minimizes latency."
-    },
-    {
-        id: 123,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: Your read replica lag is consistently 30+ seconds, causing stale data issues. The replica has identical hardware to primary. Replication appears healthy. What's causing this and how do you fix it?",
-        answer: "1. Check for long-running queries on replica blocking replication (pg_stat_activity). 2. Look for heavy analytical queries on replica - consider dedicated analytics replica. 3. Check if hot_standby_feedback is enabled to prevent vacuum removing needed rows. 4. Analyze WAL generation rate - bulk operations create replication lag. 5. Check network latency between primary and replica. 6. Verify max_wal_size and checkpoint settings on primary. 7. Consider using logical replication for selective table replication. 8. Implement streaming replication monitoring with lag alerts.",
-        explanation: "Replication lag often comes from replica-side issues, not primary. Long-running queries on replicas can conflict with vacuum and block replication. Hot_standby_feedback prevents vacuum from removing rows that active queries need. Bulk operations generate massive WAL that takes time to replay. Separate OLAP workloads to prevent impacting OLTP replication."
-    },
-    {
-        id: 124,
-        category: "Data Consistency",
-        type: "open",
-        question: "Scenario: You have a microservices architecture. Service A updates data, publishes event, but crashes before transaction commits. Service B consumes the event and updates its data. How do you prevent this inconsistency?",
-        answer: "1. Implement Transactional Outbox pattern - write events to database table atomically with business data. 2. Use Change Data Capture (Debezium) to publish events from WAL. 3. Implement idempotency in consumers to handle duplicate events. 4. Use two-phase commit (Saga) for critical cross-service operations. 5. Implement at-least-once delivery semantics with consumer deduplication. 6. Use event sourcing for auditability and state reconstruction. 7. Implement compensating transactions for rollback scenarios. 8. Add distributed tracing to track transaction flow across services.",
-        explanation: "The dual-write problem (database + message broker) can't be solved atomically without patterns. Outbox pattern ensures events are persisted in the same transaction as data. CDC guarantees event delivery from committed transactions only. Idempotency handles the inevitable duplicate deliveries. Event sourcing provides ultimate auditability and replay capability."
-    },
-    {
-        id: 125,
-        category: "Architecture",
-        type: "open",
-        question: "Scenario: You're building a real-time collaborative document editing system like Google Docs. Multiple users edit simultaneously with sub-second synchronization. How do you handle concurrent edits and conflict resolution?",
-        answer: "1. Use Operational Transformation (OT) or CRDTs for conflict-free concurrent editing. 2. Implement WebSocket connections for real-time synchronization. 3. Use Redis Pub/Sub for real-time event broadcasting. 4. Store document history as operation log (event sourcing pattern). 5. Implement presence awareness with heartbeat mechanisms. 6. Use operational transform server to serialize and transform operations. 7. Implement cursor position synchronization separately from content. 8. Use database for persistent storage, in-memory for active sessions.",
-        explanation: "Collaborative editing requires specialized algorithms. OT transforms operations to maintain consistency after concurrent edits. CRDTs provide mathematically guaranteed convergence without coordination. Event sourcing enables undo/redo and audit history. Presence requires separate optimization from document content. The challenge is balancing consistency with real-time performance."
-    },
-    {
-        id: 126,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your database has 20 indexes on a critical table. Write operations are slow (500ms+), but reads are fast. You're hesitant to drop indexes that might be used. How do you optimize this?",
-        answer: "1. Use pg_stat_user_indexes to identify unused indexes (idx_scan = 0). 2. Analyze index correlation and remove redundant indexes. 3. Check for duplicate indexes (same columns, different names). 4. Consider partial indexes for conditional queries instead of full indexes. 5. Evaluate covering indexes to replace multiple single-column indexes. 6. Use BRIN indexes instead of B-tree for large, naturally ordered data. 7. Implement index-only scans by adding INCLUDE columns. 8. Drop unused indexes in staging first, monitor query performance, then production.",
-        explanation: "Too many indexes kill write performance. Each INSERT/UPDATE must maintain all indexes. Unused indexes consume space and slow writes without benefit. Redundant indexes waste resources. Partial indexes are smaller and faster for filtered queries. BRIN indexes are tiny and effective for time-series data. Regular index maintenance is essential for write-heavy tables."
-    },
-    {
-        id: 127,
-        category: "Trade-off Analysis",
-        type: "open",
-        question: "Scenario: Your team debates between normalized and denormalized schema for a read-heavy analytics dashboard. Normalized saves storage, denormalized is faster. How do you decide?",
-        answer: "1. Measure actual query patterns - 80% of queries might hit 20% of data. 2. Consider storage is cheap, developer time and user experience are expensive. 3. Implement hybrid: normalized for writes, materialized views for reads. 4. Evaluate data change frequency - rarely changed data is safe to denormalize. 5. Use columnar storage for analytics where denormalization has less impact. 6. Consider incremental materialized views for near-real-time updates. 7. Benchmark both approaches with production-like data volumes. 8. Start normalized, denormalize specific queries when performance requires it.",
-        explanation: "Schema design is about trade-offs, not absolutes. Storage cost is negligible compared to query performance impact. Hybrid approaches provide flexibility. Materialized views offer the best of both worlds. Benchmark with realistic data volumes - small datasets hide performance problems. Start simple, optimize based on measured pain points."
-    },
-    {
-        id: 128,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: Your application experiences intermittent 'connection timeout' errors. Database metrics look normal. The issue correlates with application deployments. What's your debugging strategy?",
-        answer: "1. Check if connection pool is properly sized for deployment scenarios. 2. Look for connection leaks during application shutdown/startup. 3. Verify graceful shutdown handling - connections should drain before restart. 4. Check if new application version has different query patterns. 5. Monitor connection establishment time during deployment windows. 6. Look for thundering herd problem - all instances reconnecting simultaneously. 7. Verify health check queries aren't overwhelming database during startup. 8. Implement connection pool warmup and staggered deployment strategies.",
-        explanation: "Deployment-related issues often stem from connection management. Graceful shutdown ensures connections close properly. Startup connection storms overwhelm databases. Connection pool sizing must account for rolling deployments where old and new versions run simultaneously. Health checks can accidentally become DoS attacks during mass restarts. Staggered deployments prevent thundering herds."
-    },
-    {
-        id: 129,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to shard an existing 2TB PostgreSQL database by user_id. The application has complex queries with joins across multiple tables. How do you approach this migration?",
-        answer: "1. Analyze query patterns to identify shard keys that minimize cross-shard queries. 2. Use Citus extension for PostgreSQL sharding with minimal code changes. 3. Implement application-level sharding logic with shard routing layer. 4. Migrate tables incrementally - start with largest, most isolated tables. 5. Use foreign data wrappers (FDW) for cross-shard queries during transition. 6. Implement shard rebalancing strategy for uneven data distribution. 7. Set up cross-shard transaction handling for atomic operations. 8. Plan for shard splitting when individual shards grow too large.",
-        explanation: "Sharding is complex and should be last resort after partitioning and read replicas. Citus provides transparent sharding for PostgreSQL. Shard key selection is critical - poor choice causes cross-shard joins that defeat the purpose. Incremental migration reduces risk. FDW allows gradual transition with some performance cost. Rebalancing handles hotspot shards."
-    },
-    {
-        id: 130,
-        category: "System Design",
-        type: "open",
-        question: "Scenario: You're building a healthcare application storing patient records. HIPAA compliance requires audit trails, encryption, and access controls. Data must be retained for 7 years. How do you design this?",
-        answer: "1. Implement row-level security (RLS) to enforce patient data access controls. 2. Use column-level encryption for PHI (Protected Health Information). 3. Create comprehensive audit log table tracking all data access. 4. Implement automatic data retention policies with secure deletion. 5. Use separate schemas or databases for different data sensitivity levels. 6. Enable database-level encryption at rest (TDE). 7. Implement session timeouts and automatic locking. 8. Set up automated backups with encryption and offsite storage. 9. Use dedicated read replicas for analytics to isolate reporting from transactional access.",
-        explanation: "Healthcare data requires defense in depth. RLS ensures users only see authorized records. Audit trails are mandatory for compliance - who accessed what when. Encryption at rest and in transit is essential. Data retention policies must be automated to prevent human error. Separate environments reduce blast radius of breaches. Regular security audits verify compliance."
-    },
-    {
-        id: 131,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your batch ETL job loads 50M rows nightly and takes 8 hours. The job uses individual INSERT statements. Business wants near real-time data. How do you optimize the data pipeline?",
-        answer: "1. Replace individual INSERTs with COPY command for bulk loading. 2. Disable indexes during load, re-enable after (for non-unique indexes). 3. Use unlogged tables for intermediate staging, then insert to main table. 4. Implement parallel loading with multiple workers. 5. Use stream processing (Kafka Connect, Debezium) for CDC instead of batch. 6. Partition target table and load partitions in parallel. 7. Increase maintenance_work_mem for faster index creation. 8. Consider using external tables (foreign data wrappers) for direct querying without loading.",
-        explanation: "Bulk loading is orders of magnitude faster than individual inserts. COPY is optimized for large data movement. Disabling non-unique indexes during load eliminates per-row index maintenance. Unlogged tables skip WAL writing for staging data. Stream processing enables real-time vs batch. Parallel loading uses all available CPU. Partition-wise loading enables horizontal scaling."
-    },
-    {
-        id: 132,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: You have a global application with users in US, EU, and Asia. Database is in us-east-1 with 200ms latency for Asian users. How do you improve global performance while maintaining consistency?",
-        answer: "1. Deploy read replicas in each region for local read access. 2. Implement global load balancing with geo-DNS routing. 3. Use Aurora Global Database or CockroachDB for multi-region writes. 4. Implement data residency compliance for EU data (GDPR). 5. Use conflict-free replicated data types (CRDTs) for mergeable data. 6. Implement application-level routing - reads local, writes to primary. 7. Use caching (ElastiCache Global) for frequently accessed data. 8. Consider multi-master replication for region-local writes with conflict resolution.",
-        explanation: "Global applications face the latency-speed of light problem. Read replicas localize read traffic. Aurora Global Database provides 1-second cross-region replication. GDPR requires EU data stays in EU. CRDTs enable conflict-free local writes. Application routing logic must be region-aware. Caching is essential for global performance. Trade-offs exist between consistency and latency."
-    },
-    {
-        id: 133,
-        category: "Data Consistency",
-        type: "open",
-        question: "Scenario: You have a product inventory system. Two customers simultaneously try to buy the last item. How do you prevent overselling while maintaining performance?",
-        answer: "1. Use SELECT FOR UPDATE to lock inventory row during purchase. 2. Implement atomic decrement operations (UPDATE inventory SET count = count - 1 WHERE count > 0). 3. Use optimistic locking with version numbers for read-heavy scenarios. 4. Implement reservation pattern - reserve item for 10 minutes during checkout. 5. Use database constraints to prevent negative inventory. 6. Consider using Redis for high-speed inventory tracking with Lua scripts for atomicity. 7. Implement idempotency keys to prevent duplicate purchases on retries. 8. Use queue-based processing for inventory updates to serialize access.",
-        explanation: "Inventory management requires careful concurrency control. Pessimistic locking (FOR UPDATE) ensures accuracy but reduces throughput. Atomic operations are fastest for simple counters. Reservation pattern improves UX by holding items during checkout. Optimistic locking suits read-heavy, low-contention scenarios. Redis with Lua scripts provides microsecond-level inventory operations. Queue-based processing serializes naturally."
-    },
-    {
-        id: 134,
-        category: "Architecture",
-        type: "open",
-        question: "Scenario: You need to support both OLTP (fast transactions) and OLAP (complex analytics) on the same data. Queries conflict - analytics slow down transactions. How do you architect this?",
-        answer: "1. Implement CQRS (Command Query Responsibility Segregation) pattern. 2. Use read replicas dedicated to analytics workloads. 3. Set up ETL pipeline to data warehouse (Redshift, BigQuery, Snowflake). 4. Use change data capture (Debezium) for real-time data synchronization. 5. Implement materialized views for common analytics queries. 6. Use columnar storage for analytics, row storage for transactions. 7. Schedule analytics queries during low-traffic hours. 8. Consider HTAP databases (TiDB, SingleStore) that optimize for both workloads.",
-        explanation: "OLTP and OLAP have fundamentally different access patterns. CQRS separates read and write models completely. Read replicas isolate analytics from transactions. Data warehouses are optimized for analytical queries. CDC enables near real-time analytics without impacting OLTP. HTAP databases attempt to bridge the gap but have trade-offs. Scheduling separates workloads temporally."
-    },
-    {
-        id: 135,
-        category: "Optimization",
-        type: "open",
-        question: "Scenario: Your PostgreSQL vacuum process is constantly running and still can't keep up. Table bloat is 50% and growing. Queries are slowing down. What do you do?",
-        answer: "1. Increase autovacuum_max_workers for parallel vacuum operations. 2. Tune autovacuum_vacuum_scale_factor to trigger vacuum more aggressively. 3. Consider partitioning large tables to vacuum smaller chunks. 4. Use pg_repack or pg_squeeze to rebuild bloated tables online. 5. Increase maintenance_work_mem for faster vacuum operations. 6. Schedule manual VACUUM FULL during maintenance windows for critical tables. 7. Check for long-running transactions blocking vacuum progress. 8. Analyze update/delete patterns - consider HOT (Heap-Only Tuple) updates.",
-        explanation: "PostgreSQL's MVCC creates row versions on updates, requiring vacuum to reclaim space. Table bloat occurs when vacuum can't keep up. More workers and memory help vacuum process faster. Partitioning reduces vacuum scope. pg_repack rebuilds tables without downtime. Long transactions prevent vacuum from cleaning old row versions. HOT updates avoid index updates for non-indexed columns."
-    },
-    {
-        id: 136,
-        category: "Trade-off Analysis",
-        type: "open",
-        question: "Scenario: You must choose between adding a new feature that requires database schema changes vs. using a JSONB column for flexibility. The feature requirements may change frequently. How do you decide?",
-        answer: "1. Consider data query patterns - will you search/filter on this data? 2. Evaluate data integrity needs - referential constraints require structured schema. 3. Assess query performance requirements - JSONB is slower for complex queries. 4. Consider team expertise - JSONB requires different querying skills. 5. Use hybrid: core fields as columns, variable attributes as JSONB. 6. Evaluate migration complexity - schema changes are harder at scale. 7. Consider indexing needs - GIN indexes on JSONB vs standard B-tree. 8. Plan for future: JSONB for rapid iteration, migrate to schema when stabilized.",
-        explanation: "JSONB vs structured schema is about trade-offs. JSONB offers flexibility and rapid iteration. Structured schema provides type safety, constraints, and performance. Hybrid approaches capture benefits of both. Frequent schema changes favor JSONB temporarily. Complex queries and joins favor structured columns. JSONB is great for evolving requirements, but consider migration path to schema when requirements stabilize."
-    },
-    {
-        id: 137,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: Your database disk I/O is at 100% and queries are timing out. iostat shows high await times. The database server is on cloud EBS volumes. How do you diagnose and fix this?",
-        answer: "1. Check if you've hit IOPS or throughput limits on EBS volumes. 2. Analyze query plans for sequential scans that should use indexes. 3. Look for checkpoint spikes - tune checkpoint_completion_target. 4. Consider provisioned IOPS (io1/io2) instead of gp2/gp3 for consistent performance. 5. Enable and analyze pg_stat_statements for I/O heavy queries. 6. Increase shared_buffers to reduce disk reads. 7. Check for write amplification from small, frequent updates. 8. Consider using NVMe SSD instance storage for WAL or temporary tables.",
-        explanation: "Cloud storage has limits that physical disks don't. EBS has IOPS and throughput limits that cause queueing. Burst credits on gp2 can deplete, causing sudden slowdowns. Sequential scans generate massive I/O. Checkpoint spikes occur when checkpoint_segments fill too quickly. pg_stat_statements identifies I/O-heavy queries. Properly sized buffer cache reduces physical reads. Instance store provides local NVMe performance."
-    },
-    {
-        id: 138,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to migrate a monolithic database to microservices, each with its own database. The monolith has 200 tables with complex foreign key relationships. How do you approach this?",
-        answer: "1. Identify bounded contexts and group related tables into services. 2. Start with least critical domains to learn and minimize risk. 3. Implement strangler fig pattern - gradually replace functionality. 4. Use data synchronization (CDC) to keep monolith and microservices in sync during transition. 5. Break foreign key constraints into application-level validation. 6. Implement sagas for cross-service transactions. 7. Create API layers that abstract data access during migration. 8. Plan for data ownership transfer - each service eventually owns its data exclusively.",
-        explanation: "Database decomposition is gradual, not big-bang. Bounded contexts define natural service boundaries. Strangler fig pattern allows incremental migration. CDC keeps data synchronized during transition. Foreign keys can't cross service boundaries - move to application validation. Sagas replace ACID transactions across services. APIs provide abstraction during transition. Data ownership clarity prevents coupling."
-    },
-    {
-        id: 139,
-        category: "System Design",
-        type: "open",
-        question: "Scenario: You're building a rate limiting system for an API gateway handling 100k requests/second per region. Rate limits are per-user, per-endpoint, and can change dynamically. How do you design this?",
-        answer: "1. Use Redis Cluster with sliding window rate limiting algorithm. 2. Implement token bucket algorithm for burst handling with smooth limiting. 3. Store rate limit configs in Redis for dynamic updates. 4. Use Redis Lua scripts for atomic rate limit checks. 5. Implement local in-memory caching for hot rate limit keys. 6. Use different Redis databases for different limit tiers (free, pro, enterprise). 7. Implement circuit breaker pattern for Redis failures (fail open). 8. Use Redis Streams for rate limit audit logging.",
-        explanation: "Rate limiting at scale requires distributed counters. Redis provides sub-millisecond counter operations. Sliding window is more accurate than fixed window but more complex. Token bucket allows bursts while maintaining average rate. Lua scripts ensure atomic check-and-increment. Local caching reduces Redis load for popular keys. Circuit breakers prevent Redis failure from cascading. Different tiers need isolation."
-    },
-    {
-        id: 140,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your PostgreSQL database has tables with TEXT columns storing large JSON documents (1MB+). Queries filtering on JSON fields are slow. Table is 500GB. What's your optimization strategy?",
-        answer: "1. Create GIN indexes on frequently queried JSON paths. 2. Extract frequently queried fields into separate columns with indexes. 3. Use JSONB instead of TEXT for binary storage and indexing support. 4. Implement table partitioning by date or tenant to reduce scan scope. 5. Use TOAST storage settings to compress large values. 6. Consider external storage (S3) for large documents with metadata in PostgreSQL. 7. Use partial indexes for common query patterns. 8. Implement result pagination to avoid loading full documents.",
-        explanation: "Large JSON in PostgreSQL has trade-offs. GIN indexes enable fast JSON path queries but have overhead. Extracting hot fields to columns enables standard indexing. JSONB is more efficient than TEXT for structured data. TOAST compresses large values automatically. External storage separates document content from query metadata. Partial indexes are smaller and faster for filtered queries."
-    },
-    {
-        id: 141,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: Your write-heavy application needs to scale beyond single PostgreSQL instance limits. You've optimized indexes and queries. Read replicas exist but writes are the bottleneck. What are your options?",
-        answer: "1. Implement application-level sharding by tenant or geography. 2. Use Citus extension for transparent PostgreSQL sharding. 3. Move to cloud-native PostgreSQL (Aurora, AlloyDB) with better write scaling. 4. Separate write types - use message queues for async writes. 5. Use batch inserts to reduce transaction overhead. 6. Consider write-optimized databases (CockroachDB, YugabyteDB) for horizontal write scaling. 7. Implement CQRS to separate read and write models with different databases. 8. Use hot_standby_feedback and offloading reads to maximize primary for writes.",
-        explanation: "Single-node PostgreSQL has write throughput limits. Sharding distributes writes across nodes. Citus provides transparent sharding. Cloud-native solutions optimize storage layer. Async processing via queues smooths write spikes. NewSQL databases offer native horizontal write scaling. CQRS completely separates read and write concerns. Maximizing primary for writes requires aggressive read offloading."
-    },
-    {
-        id: 142,
-        category: "Data Consistency",
-        type: "open",
-        question: "Scenario: You have a job queue system. A worker picks up a job, processes it, but crashes before acknowledging completion. Another worker picks up the same job. How do you ensure exactly-once processing?",
-        answer: "1. Implement idempotent job processing - same job can run multiple times safely. 2. Use two-phase commit: reserve job, process, then confirm completion. 3. Implement visibility timeout - job is hidden from other workers during processing. 4. Use optimistic locking with version numbers on job status. 5. Implement deduplication based on job unique identifiers. 6. Store processed job IDs in idempotent-key store (Redis with TTL). 7. Use database transactions to ensure atomic status update. 8. Implement dead letter queues for jobs that fail repeatedly.",
-        explanation: "Exactly-once processing is theoretically impossible in distributed systems. Idempotency is the practical solution - make operations safe to repeat. Visibility timeouts prevent immediate duplicate processing. Deduplication stores track completed work. Two-phase commit patterns ensure state consistency. Dead letter queues handle poison messages. The goal is at-least-once delivery with idempotent processing."
-    },
-    {
-        id: 143,
-        category: "Architecture",
-        type: "open",
-        question: "Scenario: You're designing a system that needs to support both SQL queries for power users and full-text search for casual users. Data is relational but users need flexible querying. How do you architect this?",
-        answer: "1. Use PostgreSQL with powerful full-text search (tsvector, tsquery) for simpler needs. 2. Implement Elasticsearch for advanced search features (faceting, autocomplete, fuzzy matching). 3. Use Change Data Capture to sync PostgreSQL to Elasticsearch. 4. Route queries based on complexity - SQL for relational, ES for text search. 5. Implement GraphQL layer that federates between SQL and search results. 6. Use materialized views in PostgreSQL for common search combinations. 7. Consider hybrid search - PostgreSQL for structured filters, ES for text matching. 8. Implement caching for popular search queries.",
-        explanation: "Different query needs require different tools. PostgreSQL's full-text search handles basic needs without added complexity. Elasticsearch excels at relevance ranking and text analysis. CDC keeps search index synchronized. Query routing directs to appropriate engine. GraphQL can federate results from multiple sources. Hybrid approaches leverage strengths of each system."
-    },
-    {
-        id: 144,
-        category: "Optimization",
-        type: "open",
-        question: "Scenario: Your application has 1000+ database queries per page load due to N+1 problems in ORM. The codebase is large. How do you systematically fix this?",
-        answer: "1. Enable SQL logging and identify N+1 patterns using ORM profiling tools. 2. Implement eager loading (joins) for known relationship traversals. 3. Use DataLoader pattern for batching and deduplicating queries. 4. Implement SELECT DISTINCT to avoid duplicate parent records in joins. 5. Use database views to pre-join commonly accessed data. 6. Add query result caching for repeated lookups. 7. Implement field-level resolvers in GraphQL to batch field fetching. 8. Use lazy loading carefully - only when data is actually needed.",
-        explanation: "N+1 queries kill performance at scale. ORM profiling tools (Django Debug Toolbar, Rails Bullet) detect patterns. Eager loading fetches related data in one query. DataLoader batches multiple requests into single query. GraphQL field resolvers can be optimized to batch. Views provide pre-joined data. Caching eliminates repeated queries. Systematic detection and fixing is required for large codebases."
-    },
-    {
-        id: 145,
-        category: "Trade-off Analysis",
-        type: "open",
-        question: "Scenario: Your team must decide between using an ORM (Django ORM, Hibernate) vs. raw SQL. The ORM is slower for complex queries but faster to develop. How do you decide?",
-        answer: "1. Use ORM for 80% of standard CRUD operations - it accelerates development. 2. Use raw SQL for the 20% of complex queries where ORM generates inefficient SQL. 3. Implement repository pattern to abstract data access - swap implementation easily. 4. Use ORM's raw SQL escape hatches for specific optimized queries. 5. Consider query builders (Knex, jOOQ) as middle ground. 6. Benchmark critical paths - optimize only where needed. 7. Use database views for complex queries, map ORM to views. 8. Train team on ORM best practices to avoid common performance pitfalls.",
-        explanation: "ORM vs SQL is a false dichotomy. Both have valid use cases. ORM accelerates development and reduces boilerplate. Raw SQL provides full control for optimization. Repository pattern enables hybrid approaches. Most ORMs allow raw SQL for specific cases. Query builders offer type safety without full ORM overhead. Views bridge the gap - complex SQL with ORM convenience."
-    },
-    {
-        id: 146,
-        category: "Troubleshooting",
-        type: "open",
-        question: "Scenario: Your PostgreSQL database has dead tuples accumulating despite autovacuum running. The table keeps growing even though row count is stable. What's happening and how do you fix it?",
-        answer: "1. Check for long-running transactions preventing vacuum from removing dead tuples. 2. Look for orphaned prepared transactions (pg_prepared_xacts). 3. Check if replication slots are holding back vacuum (pg_replication_slots). 4. Verify autovacuum is actually processing the table (pg_stat_user_tables). 5. Check for lock conflicts preventing vacuum from running. 6. Look for hot_standby_feedback causing tuple retention on replicas. 7. Consider manual VACUUM (not FULL) during low traffic. 8. Tune vacuum_freeze_min_age if transaction ID wraparound is occurring.",
-        explanation: "Dead tuple accumulation usually means something blocks vacuum. Long transactions keep old row versions alive. Replication slots hold WAL and prevent cleanup. Prepared transactions can orphan resources. Autovacuum might not be triggering due to scale factor settings. Lock conflicts delay vacuum operations. Understanding MVCC and vacuum is essential for PostgreSQL administration."
-    },
-    {
-        id: 147,
-        category: "Migration",
-        type: "open",
-        question: "Scenario: You need to rename a column that's used by 50+ stored procedures, views, and application queries. How do you do this safely without breaking everything?",
-        answer: "1. Create new column with desired name, populate with data from old column. 2. Create triggers to keep both columns synchronized during transition. 3. Update views and stored procedures to use new column name. 4. Deploy application code changes to use new column (feature flags help). 5. Monitor for any missed references in error logs. 6. Once all references updated, drop triggers. 7. Remove old column after sufficient validation period. 8. Document the change for team knowledge.",
-        explanation: "Column renames in production require careful coordination. You can't simply ALTER TABLE RENAME - it breaks existing code. Dual-write pattern maintains compatibility during transition. Triggers ensure data consistency between old and new columns. Gradual rollout with feature flags reduces risk. Error monitoring catches missed references. The transition period depends on deployment frequency and cache invalidation."
-    },
-    {
-        id: 148,
-        category: "System Design",
-        type: "open",
-        question: "Scenario: You're building a time-series database for IoT sensor data - 1 million devices sending data every minute. Queries need to aggregate by time ranges and device groups. How do you design this?",
-        answer: "1. Use TimescaleDB extension on PostgreSQL for time-series optimization. 2. Implement automatic data retention with continuous aggregates. 3. Use compression for older data chunks. 4. Partition data by time (chunks) and optionally by device_id. 5. Implement downsampling - keep raw data for 7 days, aggregates for years. 6. Use inverted indexes for tag-based filtering. 7. Consider specialized time-series DB (InfluxDB, TimescaleDB) over general-purpose SQL. 8. Implement retention policies to move cold data to S3.",
-        explanation: "Time-series data has unique patterns - high write volume, time-based queries, data aging. TimescaleDB provides automatic partitioning (chunking) and compression. Continuous aggregates pre-compute rollups. Downsampling manages storage growth. Specialized databases optimize for these patterns. Retention policies automate data lifecycle. The key is matching data access patterns to storage strategies."
-    },
-    {
-        id: 149,
-        category: "Performance",
-        type: "open",
-        question: "Scenario: Your database backup window is 6 hours and growing. Business needs shorter maintenance windows. The database is 5TB. How do you optimize backups?",
-        answer: "1. Implement incremental backups (pg_basebackup with WAL archiving). 2. Use parallel backup tools (pgBackRest, Barman) with multiple workers. 3. Enable compression during backup to reduce I/O. 4. Use storage snapshots (EBS, ZFS) for near-instant backups. 5. Implement continuous archiving to S3 for point-in-time recovery. 6. Separate backup of large, less critical tables (logs, analytics). 7. Use differential backups between full backups. 8. Consider logical replication to standby for zero-downtime backups.",
-        explanation: "Large database backups require strategy changes. Incremental backups only capture changes. Parallel processing uses multiple cores. Storage snapshots are instant but need consistent snapshots. Continuous archiving provides ongoing protection without large backup windows. Separating critical and non-critical data optimizes backup priorities. The goal is balancing RTO/RPO with operational constraints."
-    },
-    {
-        id: 150,
-        category: "Scaling",
-        type: "open",
-        question: "Scenario: You have a database with 10,000 tables due to multi-tenant design (one schema per tenant). Connection pooling, vacuum, and DDL operations are becoming problematic. How do you handle this scale?",
-        answer: "1. Consolidate small tenants into shared schemas to reduce table count. 2. Use connection pooling with schema search_path for efficient multi-tenancy. 3. Implement automated partition management for tenant data growth. 4. Use pg_partman or similar for automated partition maintenance. 5. Consider row-level security (RLS) instead of schema separation for smaller tenants. 6. Implement schema templates for rapid tenant provisioning. 7. Use parallel vacuum for multiple tables simultaneously. 8. Consider database-per-tenant for enterprise customers with large data.",
-        explanation: "Too many tables strain PostgreSQL's catalog and resource management. Schema consolidation reduces overhead for small tenants. RLS provides isolation without schema multiplication. Connection pooling with search_path efficiently routes to correct schema. Automated maintenance is essential at scale. Hybrid approaches (schema for large, RLS for small) optimize resource usage. Enterprise tenants may warrant dedicated databases."
+        question: "Scenario: You need to set up alerting for your production services. What principles guide your alert design?",
+        answer: "1. Alert on symptoms (user-facing issues) not causes (disk full)<br>2. Use multi-level severity: page for critical, ticket for warnings<br>3. Avoid alert fatigue - ensure alerts require human action<br>4. Include runbook links in alert notifications<br>5. Set up alert aggregation - group related alerts<br>6. Use error budgets to balance reliability and velocity<br>7. Test alerts regularly (chaos engineering)<br>8. Alert on SLO violations, not just metric thresholds<br>9. Include context: links to dashboards, logs, recent deployments",
+        explanation: "Good alerting focuses on user-impacting issues, provides actionable context, and avoids noise. Error budgets tie alerts to business impact rather than arbitrary thresholds."
     }
 ];
 
-// Quiz State
-let currentQuestion = 0;
-let userAnswers = new Array(quizData.length).fill(null);
-let shuffledQuizData = []; // Store shuffled questions
-
-// Fisher-Yates Shuffle Algorithm
-function fisherYatesShuffle(array) {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+// Export for use in other modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = quizData;
 }
-
-// Shuffle questions and options
-function shuffleQuiz() {
-    // Shuffle the order of questions
-    const shuffledQuestions = fisherYatesShuffle(quizData);
-    
-    // For each question, shuffle the options and update correct index (only for MCQ)
-    shuffledQuizData = shuffledQuestions.map(q => {
-        // Open-ended questions don't have options to shuffle
-        if (q.type === 'open') {
-            return q;
-        }
-        
-        // Create array of [option, originalIndex] pairs
-        const optionsWithIndex = q.options.map((opt, idx) => ({
-            text: opt,
-            originalIndex: idx
-        }));
-        
-        // Shuffle the options
-        const shuffledOptions = fisherYatesShuffle(optionsWithIndex);
-        
-        // Find the new position of the correct answer
-        const newCorrectIndex = shuffledOptions.findIndex(
-            opt => opt.originalIndex === q.correct
-        );
-        
-        // Return shuffled question with updated correct index
-        return {
-            ...q,
-            options: shuffledOptions.map(opt => opt.text),
-            correct: newCorrectIndex
-        };
-    });
-}
-
-// Category Emojis Mapping
-const categoryEmojis = {
-    'SQL': '📝',
-    'NoSQL': '📦',
-    'Transaction': '⚡',
-    'Indexing': '🎯',
-    'Normalization': '📊',
-    'Database Design': '🏗️',
-    'Advanced SQL': '🔮',
-    'Performance': '🚀',
-    'Security': '🔒',
-    'Backup & Recovery': '💾',
-    'Cloud Databases': '☁️',
-    'Data Warehousing': '🏭',
-    'MongoDB': '🍃',
-    'PostgreSQL': '🐘',
-    'System Design': '🏛️',
-    'Migration': '🚚',
-    'Scaling': '📈',
-    'Troubleshooting': '🔧',
-    'Data Consistency': '🔄',
-    'Architecture': '🏛️',
-    'Optimization': '⚡',
-    'Trade-off Analysis': '⚖️'
-};
-
-// DOM Elements
-const questionCounter = document.getElementById('questionCounter');
-const categoryBadge = document.getElementById('categoryBadge');
-const questionText = document.getElementById('questionText');
-const optionsContainer = document.getElementById('optionsContainer');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const showAnswerBtn = document.getElementById('showAnswerBtn');
-const quizComplete = document.getElementById('quizComplete');
-const quizCard = document.querySelector('.quiz-card');
-const body = document.body;
-
-// Modal Elements
-const answerModal = document.getElementById('answerModal');
-const correctAnswer = document.getElementById('correctAnswer');
-const explanation = document.getElementById('explanation');
-
-// Update background gradient based on current question
-function updateBackgroundGradient() {
-    const totalQuestions = shuffledQuizData.length || 100;
-    const progress = currentQuestion / (totalQuestions - 1);
-
-    // Calculate hue: Start at 220 (blue), go through 280 (purple), 320 (pink), 160 (green), back to 200
-    // This creates a smooth transition: blue -> purple -> pink -> green -> teal
-    const startHue = 220;
-    const endHue = 380; // 220 + 160 = 380 (which wraps to 20)
-    const hue = startHue + (progress * (endHue - startHue));
-    const normalizedHue = hue % 360;
-
-    // Second color is offset by 40 degrees for a complementary look
-    const secondHue = (normalizedHue + 40) % 360;
-
-    // Use pastel/light colors with high lightness (85-92%) and low saturation (50-60%)
-    const color1 = `hsl(${normalizedHue}, 55%, 88%)`;
-    const color2 = `hsl(${secondHue}, 60%, 85%)`;
-
-    body.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-}
-
-// Initialize
-function init() {
-    console.log('Initializing quiz...');
-    
-    // Re-query DOM elements to ensure they're available
-    const questionTextEl = document.getElementById('questionText');
-    const questionCounterEl = document.getElementById('questionCounter');
-    const categoryBadgeEl = document.getElementById('categoryBadge');
-    const optionsContainerEl = document.getElementById('optionsContainer');
-    
-    console.log('DOM Elements:', {
-        questionText: !!questionTextEl,
-        questionCounter: !!questionCounterEl,
-        categoryBadge: !!categoryBadgeEl,
-        optionsContainer: !!optionsContainerEl
-    });
-    
-    // Ensure quiz data exists
-    if (!quizData || quizData.length === 0) {
-        console.error('Quiz data is empty!');
-        if (questionTextEl) questionTextEl.textContent = 'Error: Quiz data not found';
-        return;
-    }
-    
-    console.log('Quiz data loaded:', quizData.length, 'questions');
-    
-    shuffleQuiz();
-    console.log('Shuffled quiz:', shuffledQuizData.length, 'questions');
-    
-    userAnswers = new Array(shuffledQuizData.length).fill(null);
-    renderQuestion();
-    updateNavigation();
-    updateBackgroundGradient();
-}
-
-// Render current question
-function renderQuestion() {
-    // Re-query DOM elements to ensure they're available
-    const questionTextEl = document.getElementById('questionText');
-    const questionCounterEl = document.getElementById('questionCounter');
-    const categoryBadgeEl = document.getElementById('categoryBadge');
-    const optionsContainerEl = document.getElementById('optionsContainer');
-    
-    // Ensure data is loaded
-    if (!shuffledQuizData || shuffledQuizData.length === 0) {
-        console.error('Quiz data not loaded yet');
-        return;
-    }
-    
-    const q = shuffledQuizData[currentQuestion];
-    
-    if (!q) {
-        console.error('Question not found at index', currentQuestion);
-        return;
-    }
-
-    console.log('Rendering question', currentQuestion, ':', q.question.substring(0, 50));
-
-    // Update header
-    if (questionCounterEl) {
-        questionCounterEl.textContent = `Question ${currentQuestion + 1}/${shuffledQuizData.length}`;
-    }
-    
-    // Update category badge with emoji and color
-    const emoji = categoryEmojis[q.category] || '💡';
-    if (categoryBadgeEl) {
-        categoryBadgeEl.textContent = `${emoji} ${q.category}`;
-        categoryBadgeEl.className = 'category-badge';
-        categoryBadgeEl.setAttribute('data-category', q.category);
-    }
-    
-    if (questionTextEl) {
-        questionTextEl.textContent = q.question;
-    }
-    
-    // Render options based on question type
-    if (optionsContainerEl) {
-        optionsContainerEl.innerHTML = '';
-        
-        if (q.type === 'open') {
-            // Open-ended question: show hint or expected answer outline
-            const hintEl = document.createElement('div');
-            hintEl.className = 'open-question-hint';
-            hintEl.innerHTML = `
-                <div style="padding: 16px; background: rgba(255,255,255,0.1); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.3); margin-bottom: 12px;">
-                    <p style="color: rgba(255,255,255,0.7); font-style: italic; margin: 0;">💡 This is a scenario-based question. Think about your approach, then click "Show Answer" to see the detailed solution.</p>
-                </div>
-            `;
-            optionsContainerEl.appendChild(hintEl);
-        } else {
-            // Multiple choice question
-            const labels = ['A', 'B', 'C', 'D'];
-            
-            q.options.forEach((option, index) => {
-                const optionEl = document.createElement('div');
-                optionEl.className = 'option';
-                
-                optionEl.innerHTML = `
-                    <span class="option-letter">${labels[index]}</span>
-                    <span class="option-text">${option}</span>
-                `;
-                
-                optionEl.onclick = () => selectOption(index);
-                optionsContainerEl.appendChild(optionEl);
-            });
-        }
-    }
-}
-
-// Select an option - immediate feedback (only for multiple choice)
-function selectOption(index) {
-    const q = shuffledQuizData[currentQuestion];
-    
-    // Only works for multiple choice questions
-    if (q.type === 'open') return;
-    
-    userAnswers[currentQuestion] = index;
-    
-    // Get all option elements
-    const optionsContainerEl = document.getElementById('optionsContainer');
-    const optionEls = optionsContainerEl ? optionsContainerEl.querySelectorAll('.option') : [];
-    
-    optionEls.forEach((el, i) => {
-        el.classList.remove('selected');
-        
-        if (i === q.correct) {
-            // Always highlight correct answer in green
-            el.classList.add('correct');
-        } else if (i === index && i !== q.correct) {
-            // Highlight wrong answer in red only if user selected it
-            el.classList.add('wrong');
-        }
-        
-        // Disable further clicks
-        el.onclick = null;
-        el.style.cursor = 'default';
-    });
-}
-
-// Show answer in modal
-function showAnswer() {
-    const q = shuffledQuizData[currentQuestion];
-    const labels = ['A', 'B', 'C', 'D'];
-    const correctAnswerEl = document.getElementById('correctAnswer');
-    const explanationEl = document.getElementById('explanation');
-    
-    // Mark open-ended questions as "viewed" when showing answer
-    if (q.type === 'open' && userAnswers[currentQuestion] === null) {
-        userAnswers[currentQuestion] = -1; // -1 indicates "viewed but no selection"
-    }
-    
-    if (q.type === 'open') {
-        // Open-ended question: show the answer field
-        if (correctAnswerEl) {
-            correctAnswerEl.innerHTML = `
-                <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%); padding: 16px; border-radius: 12px; border-left: 4px solid #667eea; margin-bottom: 16px;">
-                    <strong style="color: #1e40af; display: block; margin-bottom: 8px;">📝 Sample Answer:</strong>
-                    <div style="color: #1e293b; line-height: 1.6;">${q.answer || 'See detailed explanation below'}</div>
-                </div>
-            `;
-        }
-        if (explanationEl) {
-            explanationEl.innerHTML = `<strong>Detailed Explanation:</strong><br><br>${q.explanation}`;
-        }
-    } else {
-        // Multiple choice question
-        if (correctAnswerEl) {
-            correctAnswerEl.textContent = `Correct answer: ${labels[q.correct]}`;
-        }
-        if (explanationEl) {
-            explanationEl.innerHTML = q.explanation;
-        }
-    }
-    
-    answerModal.classList.add('active');
-}
-
-// Close modal
-function closeModal(event) {
-    // Close if clicking overlay or close button, or if event is null (manual call)
-    if (!event || event.target === answerModal) {
-        answerModal.classList.remove('active');
-    }
-}
-
-// Navigation
-function prevQuestion() {
-    if (currentQuestion > 0) {
-        currentQuestion--;
-        renderQuestion();
-        updateNavigation();
-        updateBackgroundGradient();
-    }
-}
-
-function nextQuestion() {
-    console.log('Next clicked, current:', currentQuestion);
-    if (currentQuestion < shuffledQuizData.length - 1) {
-        currentQuestion++;
-        console.log('Moving to question:', currentQuestion);
-        renderQuestion();
-        updateNavigation();
-        updateBackgroundGradient();
-    } else {
-        // Show completion
-        showCompletion();
-    }
-}
-
-function updateNavigation() {
-    prevBtn.disabled = currentQuestion === 0;
-    nextBtn.textContent = currentQuestion === shuffledQuizData.length - 1 ? 'Finish →' : 'Next →';
-}
-
-function showCompletion() {
-    // Calculate results
-    let correctCount = 0;
-    let viewedCount = 0;
-    let mcqCount = 0;
-    let openCount = 0;
-    
-    for (let i = 0; i < shuffledQuizData.length; i++) {
-        const q = shuffledQuizData[i];
-        if (q.type === 'open') {
-            openCount++;
-            // For open questions, count if user viewed the answer
-            if (userAnswers[i] !== null) {
-                viewedCount++;
-            }
-        } else {
-            mcqCount++;
-            // For MCQ, count correct answers
-            if (userAnswers[i] === q.correct) {
-                correctCount++;
-            }
-        }
-    }
-    
-    // Update result display - show MCQ correct + Open viewed
-    const totalAnswered = correctCount + viewedCount;
-    document.getElementById('correctCount').textContent = totalAnswered;
-    document.getElementById('totalCount').textContent = shuffledQuizData.length;
-    
-    // Update result message based on score
-    const percentage = (correctCount / shuffledQuizData.length) * 100;
-    const messageEl = document.getElementById('resultMessage');
-    
-    if (percentage === 100) {
-        messageEl.textContent = '🌟 Perfect score! You\'re a database master!';
-    } else if (percentage >= 80) {
-        messageEl.textContent = '🎉 Excellent! You really know your databases!';
-    } else if (percentage >= 60) {
-        messageEl.textContent = '👍 Good job! Keep practicing to improve!';
-    } else {
-        messageEl.textContent = '💪 Keep learning! You\'ll get better with practice!';
-    }
-    
-    quizCard.style.display = 'none';
-    quizComplete.style.display = 'block';
-}
-
-function restartQuiz() {
-    shuffleQuiz();
-    currentQuestion = 0;
-    userAnswers = new Array(shuffledQuizData.length).fill(null);
-    quizCard.style.display = 'flex';
-    quizCard.style.flexDirection = 'column';
-    quizComplete.style.display = 'none';
-    renderQuestion();
-    updateNavigation();
-    updateBackgroundGradient();
-}
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-    if (quizComplete.style.display === 'block') return;
-    
-    // Close modal on Escape
-    if (e.key === 'Escape' && answerModal.classList.contains('active')) {
-        closeModal();
-        return;
-    }
-    
-    if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
-        prevQuestion();
-    } else if (e.key === 'ArrowRight') {
-        nextQuestion();
-    } else if (e.key >= '1' && e.key <= '4') {
-        selectOption(parseInt(e.key) - 1);
-    } else if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        showAnswer();
-    }
-});
-
-// Start when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    try {
-        init();
-    } catch (error) {
-        console.error('Failed to initialize quiz:', error);
-        questionText.textContent = 'Failed to load quiz. Please refresh the page.';
-    }
-});
